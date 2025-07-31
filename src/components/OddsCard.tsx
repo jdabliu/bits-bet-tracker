@@ -31,16 +31,11 @@ const OddsCard = ({
         {title}
       </div>
       
-      <div className="space-y-2">
+      <div className="space-y-1">
         <div className="flex justify-between items-center px-4">
           <span className={`text-xs ${textColor}`}>1</span>
           <span className={`text-xs ${textColor}`}>N</span>
           <span className={`text-xs ${textColor}`}>2</span>
-        </div>
-        
-        <div className="flex justify-between items-center px-4">
-          <span className={`text-sm font-medium ${textColor} text-left`}>{homeTeam}</span>
-          <span className={`text-sm font-medium ${textColor} text-right`}>{awayTeam}</span>
         </div>
         
         <div className="flex justify-between items-center gap-2">
