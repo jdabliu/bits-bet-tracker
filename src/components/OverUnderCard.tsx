@@ -15,44 +15,42 @@ interface OverUnderCardProps {
 
 const OverUnderCard = ({ title, options, onBetClick }: OverUnderCardProps) => {
   return (
-    <Card className="p-4 bg-card border-border">
-      <div className="text-center mb-4 font-medium text-primary bg-primary/20 py-2 rounded">
-        {title}
+    <Card className="p-0 bg-card border-border overflow-hidden">
+      <div className="text-center font-medium text-white bg-primary py-3">
+        Totals
       </div>
       
-      <div className="space-y-1">
-        <div className="grid grid-cols-2 gap-2 text-xs text-muted-foreground mb-3 px-1">
-          <span className="text-center font-medium">MAIS DE</span>
-          <span className="text-center font-medium">MENOS DE</span>
+      <div className="p-4">
+        <div className="grid grid-cols-2 gap-2 text-xs text-muted-foreground mb-3">
+          <span className="text-center font-medium">Over</span>
+          <span className="text-center font-medium">Under</span>
         </div>
         
-        {options.map((option, index) => (
-          <div key={index} className="grid grid-cols-2 gap-2 items-center">
-            <Button 
-              variant="outline" 
-              size="sm" 
-              className="h-12 bg-secondary/50 hover:bg-secondary border-border font-medium"
-              onClick={() => onBetClick?.(`Mais de ${option.line}`, option.overOdd, "Over/Under", option.line)}
-            >
-              <div className="text-center">
-                <div className="text-xs text-muted-foreground">MAIS {option.line}</div>
-                <div className="font-semibold text-sm">{option.overOdd}</div>
-              </div>
-            </Button>
-            
-            <Button 
-              variant="outline" 
-              size="sm" 
-              className="h-12 bg-secondary/50 hover:bg-secondary border-border font-medium"
-              onClick={() => onBetClick?.(`Menos de ${option.line}`, option.underOdd, "Over/Under", option.line)}
-            >
-              <div className="text-center">
-                <div className="text-xs text-muted-foreground">MENOS {option.line}</div>
-                <div className="font-semibold text-sm">{option.underOdd}</div>
-              </div>
-            </Button>
-          </div>
-        ))}
+        <div className="space-y-2">
+          {options.map((option, index) => (
+            <div key={index} className="grid grid-cols-2 gap-2">
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="h-16 bg-secondary/50 hover:bg-secondary border-border font-medium flex flex-col justify-center"
+                onClick={() => onBetClick?.(`Mais de ${option.line}`, option.overOdd, "Over/Under", option.line)}
+              >
+                <div className="text-xs text-muted-foreground mb-1">Over {option.line}</div>
+                <div className="font-bold text-lg">{option.overOdd}</div>
+              </Button>
+              
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="h-16 bg-secondary/50 hover:bg-secondary border-border font-medium flex flex-col justify-center"
+                onClick={() => onBetClick?.(`Menos de ${option.line}`, option.underOdd, "Over/Under", option.line)}
+              >
+                <div className="text-xs text-muted-foreground mb-1">Under {option.line}</div>
+                <div className="font-bold text-lg">{option.underOdd}</div>
+              </Button>
+            </div>
+          ))}
+        </div>
       </div>
     </Card>
   );

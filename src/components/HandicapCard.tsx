@@ -17,49 +17,42 @@ interface HandicapCardProps {
 
 const HandicapCard = ({ title, homeTeam, awayTeam, options, onBetClick }: HandicapCardProps) => {
   return (
-    <Card className="p-4 bg-card border-border">
-      <div className="text-center mb-4 font-medium text-primary bg-primary/20 py-2 rounded">
-        {title}
+    <Card className="p-0 bg-card border-border overflow-hidden">
+      <div className="text-center font-medium text-white bg-primary py-3">
+        Handicap
       </div>
       
-      <div className="space-y-1">
-        <div className="grid grid-cols-3 gap-2 text-xs text-muted-foreground mb-3 px-1">
-          <span className="text-center font-medium">{homeTeam}</span>
-          <span className="text-center font-medium">LINHA</span>
-          <span className="text-center font-medium">{awayTeam}</span>
+      <div className="p-4">
+        <div className="grid grid-cols-2 gap-2 text-xs text-muted-foreground mb-3">
+          <span className="text-center font-medium">HOME</span>
+          <span className="text-center font-medium">AWAY</span>
         </div>
         
-        {options.map((option, index) => (
-          <div key={index} className="grid grid-cols-3 gap-2 items-center">
-            <Button 
-              variant="outline" 
-              size="sm" 
-              className="h-10 bg-secondary/50 hover:bg-secondary border-border font-medium"
-              onClick={() => onBetClick?.(`${homeTeam} ${option.handicap}`, option.homeOdd, "Handicap", option.handicap.startsWith('+') ? `home_${option.handicap.slice(1)}` : `home_${option.handicap}`)}
-            >
-              <div className="text-center">
-                <div className="text-xs text-muted-foreground">{option.handicap}</div>
-                <div className="font-semibold">{option.homeOdd}</div>
-              </div>
-            </Button>
-            
-            <div className="flex items-center justify-center bg-primary/10 rounded-md py-2 px-1">
-              <span className="text-sm font-bold text-primary">{option.handicap}</span>
+        <div className="space-y-2">
+          {options.map((option, index) => (
+            <div key={index} className="grid grid-cols-2 gap-2">
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="h-16 bg-secondary/50 hover:bg-secondary border-border font-medium flex flex-col justify-center"
+                onClick={() => onBetClick?.(`${homeTeam} ${option.handicap}`, option.homeOdd, "Handicap", option.handicap.startsWith('+') ? `home_${option.handicap.slice(1)}` : `home_${option.handicap}`)}
+              >
+                <div className="text-xs text-muted-foreground mb-1">{option.handicap}</div>
+                <div className="font-bold text-lg">{option.homeOdd}</div>
+              </Button>
+              
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="h-16 bg-secondary/50 hover:bg-secondary border-border font-medium flex flex-col justify-center"
+                onClick={() => onBetClick?.(`${awayTeam} ${option.handicap}`, option.awayOdd, "Handicap", option.handicap.startsWith('+') ? `away_${option.handicap.slice(1)}` : `away_${option.handicap}`)}
+              >
+                <div className="text-xs text-muted-foreground mb-1">{option.handicap}</div>
+                <div className="font-bold text-lg">{option.awayOdd}</div>
+              </Button>
             </div>
-            
-            <Button 
-              variant="outline" 
-              size="sm" 
-              className="h-10 bg-secondary/50 hover:bg-secondary border-border font-medium"
-              onClick={() => onBetClick?.(`${awayTeam} ${option.handicap}`, option.awayOdd, "Handicap", option.handicap.startsWith('+') ? `away_${option.handicap.slice(1)}` : `away_${option.handicap}`)}
-            >
-              <div className="text-center">
-                <div className="text-xs text-muted-foreground">{option.handicap}</div>
-                <div className="font-semibold">{option.awayOdd}</div>
-              </div>
-            </Button>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </Card>
   );
