@@ -10,7 +10,7 @@ interface OverUnderOption {
 interface OverUnderCardProps {
   title: string;
   options: OverUnderOption[];
-  onBetClick?: (betType: string, odd: string, market?: string, line?: string) => void;
+  onBetClick?: (betType: string, odd: string, market?: string, line?: string, totalLine?: string) => void;
 }
 
 const OverUnderCard = ({ title, options, onBetClick }: OverUnderCardProps) => {
@@ -33,7 +33,7 @@ const OverUnderCard = ({ title, options, onBetClick }: OverUnderCardProps) => {
                 variant="outline" 
                 size="sm" 
                 className="h-16 bg-secondary/50 hover:bg-secondary border-border font-medium flex flex-col justify-center"
-                onClick={() => onBetClick?.(`Mais de ${option.line}`, option.overOdd, "Over/Under", `over_${option.line}`)}
+                onClick={() => onBetClick?.(`Mais de ${option.line}`, option.overOdd, "Totals", `over_${option.line}`, option.line)}
               >
                 <div className="text-xs text-muted-foreground mb-1">Over {option.line}</div>
                 <div className="font-bold text-lg">{option.overOdd}</div>
@@ -43,7 +43,7 @@ const OverUnderCard = ({ title, options, onBetClick }: OverUnderCardProps) => {
                 variant="outline" 
                 size="sm" 
                 className="h-16 bg-secondary/50 hover:bg-secondary border-border font-medium flex flex-col justify-center"
-                onClick={() => onBetClick?.(`Menos de ${option.line}`, option.underOdd, "Over/Under", `under_${option.line}`)}
+                onClick={() => onBetClick?.(`Menos de ${option.line}`, option.underOdd, "Totals", `under_${option.line}`, option.line)}
               >
                 <div className="text-xs text-muted-foreground mb-1">Under {option.line}</div>
                 <div className="font-bold text-lg">{option.underOdd}</div>

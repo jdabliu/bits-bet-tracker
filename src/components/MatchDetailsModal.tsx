@@ -20,7 +20,7 @@ interface MatchDetailsModalProps {
     drawOdd: string;
     awayOdd: string;
   };
-  onBetClick: (betType: string, odd: string, marketType?: string, marketOption?: string) => void;
+  onBetClick: (betType: string, odd: string, marketType?: string, marketOption?: string, handicapLine?: string, totalLine?: string) => void;
 }
 
 const MatchDetailsModal = ({ 
@@ -31,8 +31,8 @@ const MatchDetailsModal = ({
 }: MatchDetailsModalProps) => {
   if (!match) return null;
 
-  const handleOddClick = (betType: string, odd: string, marketType?: string, marketOption?: string) => {
-    onBetClick(betType, odd, marketType, marketOption);
+  const handleOddClick = (betType: string, odd: string, marketType?: string, marketOption?: string, handicapLine?: string, totalLine?: string) => {
+    onBetClick(betType, odd, marketType, marketOption, handicapLine, totalLine);
     onOpenChange(false);
   };
 

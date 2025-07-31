@@ -12,7 +12,7 @@ const MatchDetails = () => {
   const { matchId } = useParams();
   const navigate = useNavigate();
   const [showLogBetModal, setShowLogBetModal] = useState(false);
-  const [selectedBet, setSelectedBet] = useState<{ type: string; odd: string; market?: string; line?: string } | null>(null);
+  const [selectedBet, setSelectedBet] = useState<{ type: string; odd: string; market?: string; line?: string; handicapLine?: string; totalLine?: string } | null>(null);
 
   // Sample match data - in a real app this would come from an API based on matchId
   const matches = [
@@ -50,8 +50,8 @@ const MatchDetails = () => {
 
   const match = matches.find(m => m.id === matchId) || matches[0];
 
-  const handleBetClick = (betType: string, odd: string, market?: string, line?: string) => {
-    setSelectedBet({ type: betType, odd, market, line });
+  const handleBetClick = (betType: string, odd: string, market?: string, line?: string, handicapLine?: string, totalLine?: string) => {
+    setSelectedBet({ type: betType, odd, market, line, handicapLine, totalLine });
     setShowLogBetModal(true);
   };
 
@@ -147,16 +147,13 @@ const MatchDetails = () => {
         selectedMatch={`${match.homeTeam} x ${match.awayTeam}`}
         selectedBet={selectedBet?.type}
         prefilledOdds={selectedBet?.odd || ""}
-        prefilledBetType={selectedBet?.market === "Handicap" ? "Spreads" : 
-                       selectedBet?.market === "Over/Under" ? "Totals" : "Moneyline"}
+        prefilledBetType={selectedBet?.market || "Moneyline"}
         prefilledOption={selectedBet?.market === "Moneyline" && selectedBet?.line ?
           selectedBet.line :
-          selectedBet?.market === "Handicap" && selectedBet?.line ? 
+          selectedBet?.market === "Spreads" && selectedBet?.line ? 
             selectedBet.line
-            : selectedBet?.market === "Over/Under" && selectedBet?.line ?
-              selectedBet.type.includes("Mais de") ?
-                `over_${selectedBet.line}` :
-                `under_${selectedBet.line}`
+            : selectedBet?.market === "Totals" && selectedBet?.line ?
+              selectedBet.line
             : ""
         }
       />
