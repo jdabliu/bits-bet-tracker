@@ -15,7 +15,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { useState, useEffect } from "react";
+import { X, Plus, Check } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
 
 interface LogBetModalProps {
   open: boolean;
@@ -41,6 +42,15 @@ const LogBetModal = ({
   const [selectedPeriod, setSelectedPeriod] = useState("Match");
   const [selectedBetType, setSelectedBetType] = useState("Moneyline");
   const [selectedOption, setSelectedOption] = useState("");
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [availableTags, setAvailableTags] = useState([
+    "Value Bet",
+    "Safe Bet", 
+    "High Risk"
+  ]);
+  const [newTagInput, setNewTagInput] = useState("");
+  const [isTagDropdownOpen, setIsTagDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   // Effect to update state when prefilled values change
   useEffect(() => {
@@ -57,8 +67,45 @@ const LogBetModal = ({
       setSelectedPeriod("Match");
       setSelectedBetType("Moneyline");
       setSelectedOption("");
+      setSelectedTags([]);
+      setNewTagInput("");
+      setIsTagDropdownOpen(false);
     }
   }, [open]);
+
+  // Effect to handle clicking outside dropdown
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsTagDropdownOpen(false);
+      }
+    };
+
+    if (isTagDropdownOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isTagDropdownOpen]);
+
+  const handleTagToggle = (tag: string) => {
+    setSelectedTags(prev => 
+      prev.includes(tag) 
+        ? prev.filter(t => t !== tag)
+        : [...prev, tag]
+    );
+  };
+
+  const handleCreateNewTag = () => {
+    if (newTagInput.trim() && !availableTags.includes(newTagInput.trim())) {
+      const newTag = newTagInput.trim();
+      setAvailableTags(prev => [...prev, newTag]);
+      setSelectedTags(prev => [...prev, newTag]);
+      setNewTagInput("");
+    }
+  };
 
   // Determinar as opções baseadas no tipo de aposta selecionado
   const getBetOptions = () => {
@@ -140,7 +187,14 @@ const LogBetModal = ({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // Handle form submission
-    console.log({ odds, stake, selectedPeriod, selectedBetType, selectedOption });
+    console.log({ 
+      odds, 
+      stake, 
+      selectedPeriod, 
+      selectedBetType, 
+      selectedOption, 
+      selectedTags 
+    });
     onOpenChange(false);
   };
 
@@ -247,18 +301,92 @@ const LogBetModal = ({
 
               {/* Tags Selection */}
               <div className="space-y-2">
-                <Select>
-                  <SelectTrigger className="w-full bg-background border-border">
-                    <div className="mx-auto flex w-full items-center justify-between">
-                      <span className="text-muted-foreground">Select tags (optional)</span>
+                <Label>Tags (optional)</Label>
+                
+                {/* Selected Tags Display */}
+                {selectedTags.length > 0 && (
+                  <div className="flex flex-wrap gap-2 mb-2">
+                    {selectedTags.map((tag) => (
+                      <div
+                        key={tag}
+                        className="inline-flex items-center gap-1 px-2 py-1 bg-primary/10 text-primary rounded-md text-sm"
+                      >
+                        <span>{tag}</span>
+                        <button
+                          type="button"
+                          onClick={() => handleTagToggle(tag)}
+                          className="hover:bg-primary/20 rounded-full p-0.5"
+                        >
+                          <X className="h-3 w-3" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {/* Custom Tags Dropdown */}
+                <div className="relative" ref={dropdownRef}>
+                  <button
+                    type="button"
+                    onClick={() => setIsTagDropdownOpen(!isTagDropdownOpen)}
+                    className="w-full bg-background border border-border rounded-md px-3 py-2 text-left hover:bg-muted/20 transition-colors"
+                  >
+                    <span className="text-muted-foreground">
+                      {selectedTags.length > 0 
+                        ? `${selectedTags.length} tag(s) selecionada(s)`
+                        : "Selecionar tags"
+                      }
+                    </span>
+                  </button>
+                  
+                  {isTagDropdownOpen && (
+                    <div className="absolute bottom-full left-0 right-0 mb-1 bg-popover border border-border rounded-md shadow-lg z-50 max-h-48 overflow-y-auto">
+                      <div className="p-2">
+                        {/* New Tag Input */}
+                        <div className="flex gap-2 mb-2">
+                          <Input
+                            value={newTagInput}
+                            onChange={(e) => setNewTagInput(e.target.value)}
+                            placeholder="Nova tag..."
+                            className="flex-1 h-8 bg-background border-border"
+                            onKeyDown={(e) => {
+                              if (e.key === 'Enter') {
+                                e.preventDefault();
+                                handleCreateNewTag();
+                              }
+                            }}
+                          />
+                          <Button
+                            type="button"
+                            size="sm"
+                            onClick={handleCreateNewTag}
+                            disabled={!newTagInput.trim()}
+                            className="h-8 px-2 bg-primary hover:bg-primary/90"
+                          >
+                            <Plus className="h-3 w-3" />
+                          </Button>
+                        </div>
+                        
+                        {/* Available Tags */}
+                        <div className="space-y-1">
+                          {availableTags.map((tag) => (
+                            <button
+                              key={tag}
+                              type="button"
+                              onClick={() => handleTagToggle(tag)}
+                              className="w-full flex items-center justify-between px-2 py-1.5 hover:bg-muted/50 rounded text-sm text-left transition-colors"
+                            >
+                              <span>{tag}</span>
+                              {selectedTags.includes(tag) && (
+                                <Check className="h-3 w-3 text-primary" />
+                              )}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
                     </div>
-                  </SelectTrigger>
-                  <SelectContent className="bg-popover border-border z-50">
-                    <SelectItem value="value-bet">Value Bet</SelectItem>
-                    <SelectItem value="safe-bet">Safe Bet</SelectItem>
-                    <SelectItem value="high-risk">High Risk</SelectItem>
-                  </SelectContent>
-                </Select>
+                  )}
+                </div>
               </div>
             </div>
 
