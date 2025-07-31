@@ -125,12 +125,12 @@ const LogBetModal = ({
           { value: "away_0.25", label: `+0.25 ${selectedMatch.split(' x ')[1]}` },
           { value: "home_0.00", label: `+0.00 ${selectedMatch.split(' x ')[0]}` },
           { value: "away_0.00", label: `+0.00 ${selectedMatch.split(' x ')[1]}` },
-          { value: "home_0.25", label: `-0.25 ${selectedMatch.split(' x ')[0]}` },
-          { value: "away_0.25", label: `-0.25 ${selectedMatch.split(' x ')[1]}` },
-          { value: "home_0.50", label: `-0.50 ${selectedMatch.split(' x ')[0]}` },
-          { value: "away_0.50", label: `-0.50 ${selectedMatch.split(' x ')[1]}` },
-          { value: "home_0.75", label: `-0.75 ${selectedMatch.split(' x ')[0]}` },
-          { value: "away_0.75", label: `-0.75 ${selectedMatch.split(' x ')[1]}` }
+          { value: "home_-0.25", label: `-0.25 ${selectedMatch.split(' x ')[0]}` },
+          { value: "away_-0.25", label: `-0.25 ${selectedMatch.split(' x ')[1]}` },
+          { value: "home_-0.50", label: `-0.50 ${selectedMatch.split(' x ')[0]}` },
+          { value: "away_-0.50", label: `-0.50 ${selectedMatch.split(' x ')[1]}` },
+          { value: "home_-0.75", label: `-0.75 ${selectedMatch.split(' x ')[0]}` },
+          { value: "away_-0.75", label: `-0.75 ${selectedMatch.split(' x ')[1]}` }
         ];
       case "Totals":
         return [
