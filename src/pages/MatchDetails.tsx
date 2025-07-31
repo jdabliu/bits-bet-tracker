@@ -102,43 +102,26 @@ const MatchDetails = () => {
           </p>
         </div>
 
-        <div className="flex gap-8 mb-8">
-          <div className="flex-1">
-            <div className="flex gap-4 mb-4">
-              <Button variant="default" className="bg-primary hover:bg-primary/90">
-                JOGO
-              </Button>
-              <Button variant="outline" className="border-border">
-                1º TEMPO
-              </Button>
-            </div>
-
-            <OddsCard
-              title="1(N)2"
-              homeTeam={match.homeTeam}
-              awayTeam={match.awayTeam}
-              homeOdd={match.homeOdd}
-              drawOdd={match.drawOdd}
-              awayOdd={match.awayOdd}
-              isActive={true}
-              onBetClick={handleBetClick}
-            />
+        <div className="mb-8">
+          <div className="flex gap-4 mb-4">
+            <Button variant="default" className="bg-primary hover:bg-primary/90">
+              JOGO
+            </Button>
+            <Button variant="outline" className="border-border">
+              1º TEMPO
+            </Button>
           </div>
 
-          <div className="w-80">
-            <div className="bg-card border border-border rounded-lg p-4">
-              <h3 className="text-lg font-semibold mb-4 text-center">MEU PROGNÓSTICO</h3>
-              <p className="text-center text-muted-foreground mb-4">
-                Clique nas cotações de sua escolha para fazer uma previsão
-              </p>
-              <Button 
-                variant="outline" 
-                className="w-full border-border hover:bg-secondary"
-              >
-                Apostar
-              </Button>
-            </div>
-          </div>
+          <OddsCard
+            title="1(N)2"
+            homeTeam={match.homeTeam}
+            awayTeam={match.awayTeam}
+            homeOdd={match.homeOdd}
+            drawOdd={match.drawOdd}
+            awayOdd={match.awayOdd}
+            isActive={true}
+            onBetClick={handleBetClick}
+          />
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
