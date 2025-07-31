@@ -64,6 +64,9 @@ const LogBetModal = ({
   ]);
   const [newTagInput, setNewTagInput] = useState("");
   const [isTagDropdownOpen, setIsTagDropdownOpen] = useState(false);
+  const [selectedBookmaker, setSelectedBookmaker] = useState("");
+  const [isBookmakerDropdownOpen, setIsBookmakerDropdownOpen] = useState(false);
+  const availableBookmakers = ["7k", "Bet365", "Pinnacle", "BetBra"];
 
   // Effect to update state when prefilled values change
   useEffect(() => {
@@ -83,6 +86,8 @@ const LogBetModal = ({
       setSelectedTags([]);
       setNewTagInput("");
       setIsTagDropdownOpen(false);
+      setSelectedBookmaker("");
+      setIsBookmakerDropdownOpen(false);
     }
   }, [open]);
 
@@ -189,7 +194,8 @@ const LogBetModal = ({
       selectedPeriod, 
       selectedBetType, 
       selectedOption, 
-      selectedTags 
+      selectedTags,
+      selectedBookmaker
     });
     onOpenChange(false);
   };
@@ -425,6 +431,77 @@ const LogBetModal = ({
                         <CommandGroup>
                           <CommandItem
                             onSelect={() => setIsTagDropdownOpen(false)}
+                            className="cursor-pointer justify-center"
+                          >
+                            Fechar
+                          </CommandItem>
+                        </CommandGroup>
+                      </CommandList>
+                    </Command>
+                  </PopoverContent>
+                </Popover>
+              </div>
+
+              {/* Bookmaker Selection */}
+              <div className="space-y-2">
+                <Label>Bookmaker</Label>
+                <Popover open={isBookmakerDropdownOpen} onOpenChange={setIsBookmakerDropdownOpen}>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      role="combobox"
+                      aria-expanded={isBookmakerDropdownOpen}
+                      className="w-full justify-between bg-background border-border"
+                    >
+                      <span className={selectedBookmaker ? "text-foreground" : "text-muted-foreground"}>
+                        {selectedBookmaker || "Selecionar bookmaker"}
+                      </span>
+                      <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent 
+                    className="w-[--radix-popover-trigger-width] p-0 bg-popover border-border" 
+                    side="top"
+                    align="start"
+                  >
+                    <Command className="bg-popover">
+                      <CommandInput 
+                        placeholder="Buscar bookmaker..." 
+                        className="h-9"
+                      />
+                      <CommandList className="max-h-[200px]">
+                        <CommandEmpty>
+                          <div className="text-center py-6">
+                            <p className="text-sm text-muted-foreground">
+                              Nenhum bookmaker encontrado.
+                            </p>
+                          </div>
+                        </CommandEmpty>
+                        
+                        <CommandGroup>
+                          {availableBookmakers.map((bookmaker) => (
+                            <CommandItem
+                              key={bookmaker}
+                              onSelect={() => {
+                                setSelectedBookmaker(bookmaker);
+                                setIsBookmakerDropdownOpen(false);
+                              }}
+                              className="cursor-pointer"
+                            >
+                              <div className="mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary opacity-50 [&_svg]:invisible">
+                                {selectedBookmaker === bookmaker && (
+                                  <Check className="h-4 w-4 visible" />
+                                )}
+                              </div>
+                              <span>{bookmaker}</span>
+                            </CommandItem>
+                          ))}
+                        </CommandGroup>
+                        
+                        <CommandSeparator />
+                        <CommandGroup>
+                          <CommandItem
+                            onSelect={() => setIsBookmakerDropdownOpen(false)}
                             className="cursor-pointer justify-center"
                           >
                             Fechar
