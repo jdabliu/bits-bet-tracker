@@ -22,35 +22,41 @@ const HandicapCard = ({ title, homeTeam, awayTeam, options, onBetClick }: Handic
         {title}
       </div>
       
-      <div className="space-y-2">
-        <div className="grid grid-cols-3 gap-2 text-sm text-muted-foreground mb-2">
-          <span className="text-center">{homeTeam}</span>
-          <span className="text-center">Handicap</span>
-          <span className="text-center">{awayTeam}</span>
+      <div className="space-y-1">
+        <div className="grid grid-cols-3 gap-2 text-xs text-muted-foreground mb-3 px-1">
+          <span className="text-center font-medium">{homeTeam}</span>
+          <span className="text-center font-medium">LINHA</span>
+          <span className="text-center font-medium">{awayTeam}</span>
         </div>
         
         {options.map((option, index) => (
-          <div key={index} className="grid grid-cols-3 gap-2">
+          <div key={index} className="grid grid-cols-3 gap-2 items-center">
             <Button 
               variant="outline" 
               size="sm" 
-              className="bg-muted/30 hover:bg-muted text-foreground border-border"
-              onClick={() => onBetClick?.(`${option.handicap} ${homeTeam}`, option.homeOdd, "Handicap", option.handicap)}
+              className="h-10 bg-secondary/50 hover:bg-secondary border-border font-medium"
+              onClick={() => onBetClick?.(`${homeTeam} ${option.handicap}`, option.homeOdd, "Handicap", option.handicap)}
             >
-              {option.homeOdd} <span className="text-success ml-1">▲</span>
+              <div className="text-center">
+                <div className="text-xs text-muted-foreground">{option.handicap}</div>
+                <div className="font-semibold">{option.homeOdd}</div>
+              </div>
             </Button>
             
-            <div className="flex items-center justify-center bg-muted/20 rounded text-sm font-medium">
-              {option.handicap}
+            <div className="flex items-center justify-center bg-primary/10 rounded-md py-2 px-1">
+              <span className="text-sm font-bold text-primary">{option.handicap}</span>
             </div>
             
             <Button 
               variant="outline" 
               size="sm" 
-              className="bg-muted/30 hover:bg-muted text-foreground border-border"
-              onClick={() => onBetClick?.(`${option.handicap} ${awayTeam}`, option.awayOdd, "Handicap", option.handicap)}
+              className="h-10 bg-secondary/50 hover:bg-secondary border-border font-medium"
+              onClick={() => onBetClick?.(`${awayTeam} ${option.handicap}`, option.awayOdd, "Handicap", option.handicap)}
             >
-              {option.awayOdd} <span className="text-destructive ml-1">▼</span>
+              <div className="text-center">
+                <div className="text-xs text-muted-foreground">{option.handicap}</div>
+                <div className="font-semibold">{option.awayOdd}</div>
+              </div>
             </Button>
           </div>
         ))}
