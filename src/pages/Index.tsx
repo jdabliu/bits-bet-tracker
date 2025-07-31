@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Header from "@/components/Header";
-import OddsCard from "@/components/OddsCard";
+import SearchBar from "@/components/SearchBar";
 import LogBetModal from "@/components/LogBetModal";
 import { Card } from "@/components/ui/card";
 
@@ -8,6 +8,8 @@ const Index = () => {
   const [showBetModal, setShowBetModal] = useState(false);
   const [selectedMatch, setSelectedMatch] = useState("");
   const [selectedBet, setSelectedBet] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filteredMatches, setFilteredMatches] = useState<typeof matches>([]);
 
   // Dados das partidas baseados no HTML fornecido
   const matches = [
@@ -49,6 +51,17 @@ const Index = () => {
     setShowBetModal(true);
   };
 
+  const handleSearch = (query: string) => {
+    setSearchQuery(query);
+    const filtered = matches.filter(match => 
+      match.homeTeam.toLowerCase().includes(query.toLowerCase()) ||
+      match.awayTeam.toLowerCase().includes(query.toLowerCase())
+    );
+    setFilteredMatches(filtered);
+  };
+
+  const displayMatches = searchQuery ? filteredMatches : matches;
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -60,72 +73,85 @@ const Index = () => {
               <h1 className="text-2xl font-bold text-primary mb-2">Brazil - Brasileiro U20</h1>
             </div>
             
+            <div className="mb-6 flex flex-col items-center">
+              <SearchBar onSearch={handleSearch} />
+            </div>
+            
             <div className="mb-6">
-              <h3 className="text-lg font-semibold text-foreground mb-4">Próximas partidas</h3>
+              <h3 className="text-lg font-semibold text-foreground mb-4">
+                {searchQuery ? `Resultados para "${searchQuery}"` : "Próximas partidas"}
+                {searchQuery && ` (${displayMatches.length})`}
+              </h3>
             </div>
             
             <div className="space-y-6">
-              {matches.map((match, index) => (
-                <div key={match.id}>
-                  {index === 0 && (
-                    <div className="mb-4">
-                      <p className="font-medium text-muted-foreground">{match.date}</p>
-                    </div>
-                  )}
-                  
-                  <div className="border-b border-border pb-4 last:border-b-0">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-4">
-                        <span className="font-bold text-lg">{match.time}</span>
-                        <div className="flex items-center gap-2">
-                          <span className="font-medium">{match.homeTeam}</span>
-                          <span className="text-muted-foreground">vs</span>
-                          <span className="font-medium">{match.awayTeam}</span>
-                        </div>
+              {displayMatches.length > 0 ? (
+                displayMatches.map((match, index) => (
+                  <div key={match.id}>
+                    {index === 0 && (
+                      <div className="mb-4">
+                        <p className="font-medium text-muted-foreground">{match.date}</p>
                       </div>
-                      
-                      <div className="flex items-center gap-2">
-                        <div className="flex items-center gap-1">
-                          <span className="text-xs text-muted-foreground">1</span>
-                          <button
-                            onClick={() => handleBetClick(`${match.homeTeam} x ${match.awayTeam}`, match.homeTeam, match.homeOdd)}
-                            className="px-3 py-2 bg-muted/50 hover:bg-muted border border-border rounded text-sm font-medium transition-colors"
-                          >
-                            {match.homeOdd}
-                            <span className="text-success ml-1">▲</span>
-                          </button>
+                    )}
+                    
+                    <div className="border-b border-border pb-4 last:border-b-0">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-4">
+                          <span className="font-bold text-lg">{match.time}</span>
+                          <div className="flex items-center gap-2">
+                            <span className="font-medium">{match.homeTeam}</span>
+                            <span className="text-muted-foreground">vs</span>
+                            <span className="font-medium">{match.awayTeam}</span>
+                          </div>
                         </div>
                         
-                        <div className="flex items-center gap-1">
-                          <span className="text-xs text-muted-foreground">N</span>
-                          <button
-                            onClick={() => handleBetClick(`${match.homeTeam} x ${match.awayTeam}`, "Empate", match.drawOdd)}
-                            className="px-3 py-2 bg-muted/50 hover:bg-muted border border-border rounded text-sm font-medium transition-colors"
-                          >
-                            {match.drawOdd}
-                            <span className="text-success ml-1">▲</span>
+                        <div className="flex items-center gap-2">
+                          <div className="flex items-center gap-1">
+                            <span className="text-xs text-muted-foreground">1</span>
+                            <button
+                              onClick={() => handleBetClick(`${match.homeTeam} x ${match.awayTeam}`, match.homeTeam, match.homeOdd)}
+                              className="px-3 py-2 bg-muted/50 hover:bg-muted border border-border rounded text-sm font-medium transition-colors"
+                            >
+                              {match.homeOdd}
+                              <span className="text-success ml-1">▲</span>
+                            </button>
+                          </div>
+                          
+                          <div className="flex items-center gap-1">
+                            <span className="text-xs text-muted-foreground">N</span>
+                            <button
+                              onClick={() => handleBetClick(`${match.homeTeam} x ${match.awayTeam}`, "Empate", match.drawOdd)}
+                              className="px-3 py-2 bg-muted/50 hover:bg-muted border border-border rounded text-sm font-medium transition-colors"
+                            >
+                              {match.drawOdd}
+                              <span className="text-success ml-1">▲</span>
+                            </button>
+                          </div>
+                          
+                          <div className="flex items-center gap-1">
+                            <span className="text-xs text-muted-foreground">2</span>
+                            <button
+                              onClick={() => handleBetClick(`${match.homeTeam} x ${match.awayTeam}`, match.awayTeam, match.awayOdd)}
+                              className="px-3 py-2 bg-muted/50 hover:bg-muted border border-border rounded text-sm font-medium transition-colors"
+                            >
+                              {match.awayOdd}
+                              <span className="text-destructive ml-1">▼</span>
+                            </button>
+                          </div>
+                          
+                          <button className="font-bold text-xl text-muted-foreground hover:text-foreground transition-colors">
+                            +
                           </button>
                         </div>
-                        
-                        <div className="flex items-center gap-1">
-                          <span className="text-xs text-muted-foreground">2</span>
-                          <button
-                            onClick={() => handleBetClick(`${match.homeTeam} x ${match.awayTeam}`, match.awayTeam, match.awayOdd)}
-                            className="px-3 py-2 bg-muted/50 hover:bg-muted border border-border rounded text-sm font-medium transition-colors"
-                          >
-                            {match.awayOdd}
-                            <span className="text-destructive ml-1">▼</span>
-                          </button>
-                        </div>
-                        
-                        <button className="font-bold text-xl text-muted-foreground hover:text-foreground transition-colors">
-                          +
-                        </button>
                       </div>
                     </div>
                   </div>
+                ))
+              ) : searchQuery ? (
+                <div className="text-center py-8">
+                  <p className="text-muted-foreground">Nenhum evento encontrado para "{searchQuery}"</p>
                 </div>
-              ))}
+              ) : null}
             </div>
           </Card>
         </div>

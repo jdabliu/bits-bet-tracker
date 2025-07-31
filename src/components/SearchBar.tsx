@@ -1,7 +1,5 @@
-import { useState } from "react";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import { Search } from "lucide-react";
+import { useState } from "react";
 
 interface SearchBarProps {
   onSearch: (query: string) => void;
@@ -12,20 +10,28 @@ const SearchBar = ({ onSearch }: SearchBarProps) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSearch(query);
+    if (query.trim()) {
+      onSearch(query.trim());
+    }
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setQuery(e.target.value);
   };
 
   return (
-    <div className="w-full max-w-md mx-auto">
-      <form onSubmit={handleSubmit} className="relative">
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
-          <Input
+    <div className="search-bar__wrapper mx-4 lg:mx-0 w-full max-w-md">
+      <form onSubmit={handleSubmit}>
+        <div className="search-bar__inner relative flex items-center bg-background border border-border rounded-md px-3 py-2 focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2">
+          <span className="block icon mr-3">
+            <Search className="h-4 w-4 text-muted-foreground" />
+          </span>
+          <input
             type="text"
-            placeholder="Pesquisar confronto..."
+            placeholder="Pesquisar um evento"
             value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            className="pl-10 pr-4 py-2 w-full bg-secondary border-border"
+            onChange={handleChange}
+            className="flex-1 bg-transparent border-none outline-none text-foreground placeholder:text-muted-foreground"
           />
         </div>
       </form>
