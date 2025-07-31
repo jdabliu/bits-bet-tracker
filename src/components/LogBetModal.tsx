@@ -70,7 +70,6 @@ const LogBetModal = ({
 
   // Effect to update state when prefilled values change
   useEffect(() => {
-    console.log("LogBetModal prefilled values:", { prefilledOdds, prefilledBetType, prefilledOption });
     if (prefilledOdds) setOdds(prefilledOdds);
     if (prefilledBetType) setSelectedBetType(prefilledBetType);
     if (prefilledOption) setSelectedOption(prefilledOption);

@@ -51,7 +51,6 @@ const MatchDetails = () => {
   const match = matches.find(m => m.id === matchId) || matches[0];
 
   const handleBetClick = (betType: string, odd: string, market?: string, line?: string) => {
-    console.log("handleBetClick called with:", { betType, odd, market, line });
     setSelectedBet({ type: betType, odd, market, line });
     setShowLogBetModal(true);
   };
@@ -152,7 +151,7 @@ const MatchDetails = () => {
                        selectedBet?.market === "Over/Under" ? "Totals" : "Moneyline"}
         prefilledOption={selectedBet?.market === "Handicap" && selectedBet?.line ? 
           selectedBet.type.includes(match.homeTeam) ? 
-            `home_${selectedBet.line}` : 
+            `home_${selectedBet.line.replace('+', '')}` : 
             `away_${selectedBet.line.replace('+', '')}`
           : selectedBet?.market === "Over/Under" && selectedBet?.line ?
             selectedBet.type.includes("Mais de") ?
