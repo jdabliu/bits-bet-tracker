@@ -12,7 +12,7 @@ interface HandicapCardProps {
   homeTeam: string;
   awayTeam: string;
   options: HandicapOption[];
-  onBetClick?: (betType: string, odd: string) => void;
+  onBetClick?: (betType: string, odd: string, market?: string, line?: string) => void;
 }
 
 const HandicapCard = ({ title, homeTeam, awayTeam, options, onBetClick }: HandicapCardProps) => {
@@ -35,7 +35,7 @@ const HandicapCard = ({ title, homeTeam, awayTeam, options, onBetClick }: Handic
               variant="outline" 
               size="sm" 
               className="bg-muted/30 hover:bg-muted text-foreground border-border"
-              onClick={() => onBetClick?.(`${option.handicap} ${homeTeam}`, option.homeOdd)}
+              onClick={() => onBetClick?.(`${option.handicap} ${homeTeam}`, option.homeOdd, "Handicap", option.handicap)}
             >
               {option.homeOdd} <span className="text-success ml-1">▲</span>
             </Button>
@@ -48,7 +48,7 @@ const HandicapCard = ({ title, homeTeam, awayTeam, options, onBetClick }: Handic
               variant="outline" 
               size="sm" 
               className="bg-muted/30 hover:bg-muted text-foreground border-border"
-              onClick={() => onBetClick?.(`${option.handicap} ${awayTeam}`, option.awayOdd)}
+              onClick={() => onBetClick?.(`${option.handicap} ${awayTeam}`, option.awayOdd, "Handicap", option.handicap)}
             >
               {option.awayOdd} <span className="text-destructive ml-1">▼</span>
             </Button>

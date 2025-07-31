@@ -12,7 +12,7 @@ const MatchDetails = () => {
   const { matchId } = useParams();
   const navigate = useNavigate();
   const [showLogBetModal, setShowLogBetModal] = useState(false);
-  const [selectedBet, setSelectedBet] = useState<{ type: string; odd: string } | null>(null);
+  const [selectedBet, setSelectedBet] = useState<{ type: string; odd: string; market?: string; line?: string } | null>(null);
 
   // Sample match data - in a real app this would come from an API based on matchId
   const matches = [
@@ -50,8 +50,8 @@ const MatchDetails = () => {
 
   const match = matches.find(m => m.id === matchId) || matches[0];
 
-  const handleBetClick = (betType: string, odd: string) => {
-    setSelectedBet({ type: betType, odd });
+  const handleBetClick = (betType: string, odd: string, market?: string, line?: string) => {
+    setSelectedBet({ type: betType, odd, market, line });
     setShowLogBetModal(true);
   };
 
@@ -146,9 +146,19 @@ const MatchDetails = () => {
         onOpenChange={setShowLogBetModal}
         selectedMatch={`${match.homeTeam} x ${match.awayTeam}`}
         selectedBet={selectedBet?.type}
-        prefilledOdds=""
-        prefilledBetType=""
-        prefilledOption=""
+        prefilledOdds={selectedBet?.odd || ""}
+        prefilledBetType={selectedBet?.market === "Handicap" ? "Spreads" : 
+                       selectedBet?.market === "Over/Under" ? "Totals" : "Moneyline"}
+        prefilledOption={selectedBet?.market === "Handicap" && selectedBet?.line ? 
+          selectedBet.type.includes(match.homeTeam) ? 
+            `home_${selectedBet.line}` : 
+            `away_${selectedBet.line.replace('+', '')}`
+          : selectedBet?.market === "Over/Under" && selectedBet?.line ?
+            selectedBet.type.includes("Mais de") ?
+              `over_${selectedBet.line}` :
+              `under_${selectedBet.line}`
+          : ""
+        }
       />
     </div>
   );
