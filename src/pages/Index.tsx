@@ -188,7 +188,10 @@ const Index = () => {
                             </button>
                           </div>
                           
-                          <button className="font-bold text-xl text-muted-foreground hover:text-foreground transition-colors">
+                          <button 
+                            className="font-bold text-xl text-muted-foreground hover:text-foreground transition-colors"
+                            onClick={() => handleMatchClick(match)}
+                          >
                             +
                           </button>
                         </div>
