@@ -107,7 +107,7 @@ const Index = () => {
     setFilteredMatches(filtered);
   };
 
-  const displayMatches = searchQuery ? filteredMatches : matches;
+  const displayMatches = searchQuery ? filteredMatches : [];
 
   return (
     <div className="min-h-screen bg-background">
@@ -116,20 +116,18 @@ const Index = () => {
       <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="mb-8">
           <Card className="p-6 bg-card border-border">
-            <div className="text-center mb-6">
-              <h1 className="text-2xl font-bold text-primary mb-2">Brazil - Brasileiro U20</h1>
-            </div>
             
             <div className="mb-6 flex flex-col items-center">
               <SearchBar onSearch={handleSearch} />
             </div>
             
-            <div className="mb-6">
-              <h3 className="text-lg font-semibold text-foreground mb-4">
-                {searchQuery ? `Results for "${searchQuery}"` : "Upcoming matches"}
-                {searchQuery && ` (${displayMatches.length})`}
-              </h3>
-            </div>
+            {searchQuery && (
+              <div className="mb-6">
+                <h3 className="text-lg font-semibold text-foreground mb-4">
+                  Results for "{searchQuery}" ({displayMatches.length})
+                </h3>
+              </div>
+            )}
             
             <div className="space-y-6">
               {displayMatches.length > 0 ? (
