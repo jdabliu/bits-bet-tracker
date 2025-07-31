@@ -26,21 +26,21 @@ const OddsCard = ({
   const textColor = isActive ? "text-primary-foreground" : "text-card-foreground";
 
   return (
-    <Card className={`p-4 ${cardBg} border-border`}>
-      <div className={`text-center mb-4 font-medium ${textColor}`}>
+    <Card className={`p-3 max-w-2xl mx-auto ${cardBg} border-border`}>
+      <div className={`text-center mb-3 text-sm font-medium ${textColor}`}>
         {title}
       </div>
       
-      <div className="space-y-4">
-        <div className="flex justify-between items-center">
-          <span className={`text-sm ${textColor}`}>1</span>
-          <span className={`text-sm ${textColor}`}>N</span>
-          <span className={`text-sm ${textColor}`}>2</span>
+      <div className="space-y-3">
+        <div className="flex justify-between items-center px-4">
+          <span className={`text-xs ${textColor}`}>1</span>
+          <span className={`text-xs ${textColor}`}>N</span>
+          <span className={`text-xs ${textColor}`}>2</span>
         </div>
         
-        <div className="flex justify-between items-center">
-          <span className={`font-medium ${textColor}`}>{homeTeam}</span>
-          <span className={`font-medium ${textColor}`}>{awayTeam}</span>
+        <div className="flex justify-between items-center px-4">
+          <span className={`text-sm font-medium ${textColor} text-left`}>{homeTeam}</span>
+          <span className={`text-sm font-medium ${textColor} text-right`}>{awayTeam}</span>
         </div>
         
         <div className="flex justify-between items-center gap-2">
