@@ -1,59 +1,142 @@
 import { useState } from "react";
 import Header from "@/components/Header";
-import SearchBar from "@/components/SearchBar";
-import MatchCard from "@/components/MatchCard";
-import MatchDetails from "@/pages/MatchDetails";
+import OddsCard from "@/components/OddsCard";
+import LogBetModal from "@/components/LogBetModal";
+import { Card } from "@/components/ui/card";
 
 const Index = () => {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [showMatchDetails, setShowMatchDetails] = useState(false);
-  const [showResults, setShowResults] = useState(false);
+  const [showBetModal, setShowBetModal] = useState(false);
+  const [selectedMatch, setSelectedMatch] = useState("");
+  const [selectedBet, setSelectedBet] = useState("");
 
-  const handleSearch = (query: string) => {
-    setSearchQuery(query);
-    setShowResults(true);
+  // Dados das partidas baseados no HTML fornecido
+  const matches = [
+    {
+      id: 1,
+      date: "Quarta-feira, 30 de julho de 2025",
+      time: "16:00",
+      homeTeam: "Athletico Paranaense",
+      awayTeam: "Vasco da Gama",
+      homeOdd: "2.13",
+      drawOdd: "3.44",
+      awayOdd: "3.15"
+    },
+    {
+      id: 2,
+      date: "Quarta-feira, 30 de julho de 2025",
+      time: "16:00",
+      homeTeam: "Palmeiras",
+      awayTeam: "Juventude",
+      homeOdd: "1.29",
+      drawOdd: "5.37",
+      awayOdd: "8.65"
+    },
+    {
+      id: 3,
+      date: "Quarta-feira, 30 de julho de 2025",
+      time: "19:00",
+      homeTeam: "RB Bragantino",
+      awayTeam: "Fortaleza",
+      homeOdd: "1.72",
+      drawOdd: "3.90",
+      awayOdd: "4.14"
+    }
+  ];
+
+  const handleBetClick = (match: string, betType: string, odd: string) => {
+    setSelectedMatch(match);
+    setSelectedBet(`${betType} - ${odd}`);
+    setShowBetModal(true);
   };
-
-  const handleMatchClick = () => {
-    setShowMatchDetails(true);
-  };
-
-  const handleBackToSearch = () => {
-    setShowMatchDetails(false);
-  };
-
-  if (showMatchDetails) {
-    return <MatchDetails onBack={handleBackToSearch} />;
-  }
 
   return (
     <div className="min-h-screen bg-background">
       <Header />
       
       <div className="max-w-7xl mx-auto px-4 py-8">
-        <div className="flex flex-col items-center justify-center min-h-[60vh]">
-          <div className="text-center mb-8">
-            <h1 className="text-4xl font-bold text-primary mb-4">BITS</h1>
-            <p className="text-xl text-muted-foreground mb-8">
-              Rastreamento de Apostas
-            </p>
-          </div>
-
-          <SearchBar onSearch={handleSearch} />
-
-          {showResults && searchQuery && (
-            <div className="mt-8 w-full max-w-md">
-              <div className="space-y-4">
-                <MatchCard
-                  homeTeam="Flamengo"
-                  awayTeam="Chelsea"
-                  onClick={handleMatchClick}
-                />
-              </div>
+        <div className="mb-8">
+          <Card className="p-6 bg-card border-border">
+            <div className="text-center mb-6">
+              <h1 className="text-2xl font-bold text-primary mb-2">Brazil - Brasileiro U20</h1>
             </div>
-          )}
+            
+            <div className="mb-6">
+              <h3 className="text-lg font-semibold text-foreground mb-4">Próximas partidas</h3>
+            </div>
+            
+            <div className="space-y-6">
+              {matches.map((match, index) => (
+                <div key={match.id}>
+                  {index === 0 && (
+                    <div className="mb-4">
+                      <p className="font-medium text-muted-foreground">{match.date}</p>
+                    </div>
+                  )}
+                  
+                  <div className="border-b border-border pb-4 last:border-b-0">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-4">
+                        <span className="font-bold text-lg">{match.time}</span>
+                        <div className="flex items-center gap-2">
+                          <span className="font-medium">{match.homeTeam}</span>
+                          <span className="text-muted-foreground">vs</span>
+                          <span className="font-medium">{match.awayTeam}</span>
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-1">
+                          <span className="text-xs text-muted-foreground">1</span>
+                          <button
+                            onClick={() => handleBetClick(`${match.homeTeam} x ${match.awayTeam}`, match.homeTeam, match.homeOdd)}
+                            className="px-3 py-2 bg-muted/50 hover:bg-muted border border-border rounded text-sm font-medium transition-colors"
+                          >
+                            {match.homeOdd}
+                            <span className="text-success ml-1">▲</span>
+                          </button>
+                        </div>
+                        
+                        <div className="flex items-center gap-1">
+                          <span className="text-xs text-muted-foreground">N</span>
+                          <button
+                            onClick={() => handleBetClick(`${match.homeTeam} x ${match.awayTeam}`, "Empate", match.drawOdd)}
+                            className="px-3 py-2 bg-muted/50 hover:bg-muted border border-border rounded text-sm font-medium transition-colors"
+                          >
+                            {match.drawOdd}
+                            <span className="text-success ml-1">▲</span>
+                          </button>
+                        </div>
+                        
+                        <div className="flex items-center gap-1">
+                          <span className="text-xs text-muted-foreground">2</span>
+                          <button
+                            onClick={() => handleBetClick(`${match.homeTeam} x ${match.awayTeam}`, match.awayTeam, match.awayOdd)}
+                            className="px-3 py-2 bg-muted/50 hover:bg-muted border border-border rounded text-sm font-medium transition-colors"
+                          >
+                            {match.awayOdd}
+                            <span className="text-destructive ml-1">▼</span>
+                          </button>
+                        </div>
+                        
+                        <button className="font-bold text-xl text-muted-foreground hover:text-foreground transition-colors">
+                          +
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </Card>
         </div>
       </div>
+
+      <LogBetModal
+        open={showBetModal}
+        onOpenChange={setShowBetModal}
+        selectedMatch={selectedMatch}
+        selectedBet={selectedBet}
+      />
     </div>
   );
 };
