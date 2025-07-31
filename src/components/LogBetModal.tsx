@@ -15,21 +15,50 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 interface LogBetModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   selectedMatch?: string;
   selectedBet?: string;
+  prefilledOdds?: string;
+  prefilledBetType?: string;
+  prefilledOption?: string;
 }
 
-const LogBetModal = ({ open, onOpenChange, selectedMatch = "Flamengo x Chelsea", selectedBet }: LogBetModalProps) => {
+const LogBetModal = ({ 
+  open, 
+  onOpenChange, 
+  selectedMatch = "Flamengo x Chelsea", 
+  selectedBet,
+  prefilledOdds,
+  prefilledBetType,
+  prefilledOption
+}: LogBetModalProps) => {
   const [odds, setOdds] = useState("");
   const [stake, setStake] = useState("");
   const [selectedPeriod, setSelectedPeriod] = useState("Match");
   const [selectedBetType, setSelectedBetType] = useState("Moneyline");
   const [selectedOption, setSelectedOption] = useState("");
+
+  // Effect to update state when prefilled values change
+  useEffect(() => {
+    if (prefilledOdds) setOdds(prefilledOdds);
+    if (prefilledBetType) setSelectedBetType(prefilledBetType);
+    if (prefilledOption) setSelectedOption(prefilledOption);
+  }, [prefilledOdds, prefilledBetType, prefilledOption]);
+
+  // Effect to reset form when modal closes
+  useEffect(() => {
+    if (!open) {
+      setOdds("");
+      setStake("");
+      setSelectedPeriod("Match");
+      setSelectedBetType("Moneyline");
+      setSelectedOption("");
+    }
+  }, [open]);
 
   // Determinar as opções baseadas no tipo de aposta selecionado
   const getBetOptions = () => {
@@ -72,6 +101,20 @@ const LogBetModal = ({ open, onOpenChange, selectedMatch = "Flamengo x Chelsea",
           { value: "over_3.5", label: "Over 3.5 gols" },
           { value: "under_3.5", label: "Under 3.5 gols" }
         ];
+      case "Both Teams to Score":
+        return [
+          { value: "yes", label: "Sim" },
+          { value: "no", label: "Não" }
+        ];
+      case "Corners":
+        return [
+          { value: "over_8.5", label: "Over 8.5 escanteios" },
+          { value: "under_8.5", label: "Under 8.5 escanteios" },
+          { value: "over_9.5", label: "Over 9.5 escanteios" },
+          { value: "under_9.5", label: "Under 9.5 escanteios" },
+          { value: "over_10.5", label: "Over 10.5 escanteios" },
+          { value: "under_10.5", label: "Under 10.5 escanteios" }
+        ];
       default:
         return [];
     }
@@ -85,6 +128,10 @@ const LogBetModal = ({ open, onOpenChange, selectedMatch = "Flamengo x Chelsea",
         return "Spreads (Handicap)";
       case "Totals":
         return "Under/Over";
+      case "Both Teams to Score":
+        return "Ambos Marcam";
+      case "Corners":
+        return "Escanteios";
       default:
         return selectedBetType;
     }
@@ -137,11 +184,13 @@ const LogBetModal = ({ open, onOpenChange, selectedMatch = "Flamengo x Chelsea",
                 <SelectTrigger className="w-full bg-background border-border">
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent className="bg-popover border-border z-50">
-                  <SelectItem value="Moneyline">Moneyline (3-way)</SelectItem>
-                  <SelectItem value="Spreads">Spreads</SelectItem>
-                  <SelectItem value="Totals">Totals</SelectItem>
-                </SelectContent>
+                  <SelectContent className="bg-popover border-border z-50">
+                    <SelectItem value="Moneyline">Moneyline (3-way)</SelectItem>
+                    <SelectItem value="Spreads">Spreads</SelectItem>
+                    <SelectItem value="Totals">Totals</SelectItem>
+                    <SelectItem value="Both Teams to Score">Both Teams to Score</SelectItem>
+                    <SelectItem value="Corners">Corners</SelectItem>
+                  </SelectContent>
               </Select>
             </div>
 

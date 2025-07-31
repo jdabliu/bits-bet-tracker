@@ -20,7 +20,7 @@ interface MatchDetailsModalProps {
     drawOdd: string;
     awayOdd: string;
   };
-  onBetClick: (betType: string, odd: string) => void;
+  onBetClick: (betType: string, odd: string, marketType?: string, marketOption?: string) => void;
 }
 
 const MatchDetailsModal = ({ 
@@ -31,8 +31,8 @@ const MatchDetailsModal = ({
 }: MatchDetailsModalProps) => {
   if (!match) return null;
 
-  const handleOddClick = (betType: string, odd: string) => {
-    onBetClick(betType, odd);
+  const handleOddClick = (betType: string, odd: string, marketType?: string, marketOption?: string) => {
+    onBetClick(betType, odd, marketType, marketOption);
     onOpenChange(false);
   };
 
@@ -74,7 +74,7 @@ const MatchDetailsModal = ({
               <div className="text-center space-y-2">
                 <div className="text-xs text-muted-foreground">1</div>
                 <Button
-                  onClick={() => handleOddClick(match.homeTeam, match.homeOdd)}
+                  onClick={() => handleOddClick(match.homeTeam, match.homeOdd, "Moneyline", "home")}
                   className="w-full bg-muted/50 hover:bg-muted text-foreground border border-border"
                   variant="outline"
                 >
@@ -89,7 +89,7 @@ const MatchDetailsModal = ({
               <div className="text-center space-y-2">
                 <div className="text-xs text-muted-foreground">X</div>
                 <Button
-                  onClick={() => handleOddClick("Empate", match.drawOdd)}
+                  onClick={() => handleOddClick("Empate", match.drawOdd, "Moneyline", "draw")}
                   className="w-full bg-muted/50 hover:bg-muted text-foreground border border-border"
                   variant="outline"
                 >
@@ -104,7 +104,7 @@ const MatchDetailsModal = ({
               <div className="text-center space-y-2">
                 <div className="text-xs text-muted-foreground">2</div>
                 <Button
-                  onClick={() => handleOddClick(match.awayTeam, match.awayOdd)}
+                  onClick={() => handleOddClick(match.awayTeam, match.awayOdd, "Moneyline", "away")}
                   className="w-full bg-muted/50 hover:bg-muted text-foreground border border-border"
                   variant="outline"
                 >
@@ -127,6 +127,7 @@ const MatchDetailsModal = ({
               <Button 
                 variant="outline" 
                 className="h-12 bg-muted/30 hover:bg-muted border-border"
+                onClick={() => handleOddClick("", "", "Totals", "")}
               >
                 <div className="text-center">
                   <div className="text-xs text-muted-foreground">Total de Gols</div>
@@ -136,6 +137,7 @@ const MatchDetailsModal = ({
               <Button 
                 variant="outline" 
                 className="h-12 bg-muted/30 hover:bg-muted border-border"
+                onClick={() => handleOddClick("", "", "Spreads", "")}
               >
                 <div className="text-center">
                   <div className="text-xs text-muted-foreground">Handicap</div>
@@ -145,6 +147,7 @@ const MatchDetailsModal = ({
               <Button 
                 variant="outline" 
                 className="h-12 bg-muted/30 hover:bg-muted border-border"
+                onClick={() => handleOddClick("", "", "Both Teams to Score", "")}
               >
                 <div className="text-center">
                   <div className="text-xs text-muted-foreground">Ambos Marcam</div>
@@ -154,6 +157,7 @@ const MatchDetailsModal = ({
               <Button 
                 variant="outline" 
                 className="h-12 bg-muted/30 hover:bg-muted border-border"
+                onClick={() => handleOddClick("", "", "Corners", "")}
               >
                 <div className="text-center">
                   <div className="text-xs text-muted-foreground">Escanteios</div>

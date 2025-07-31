@@ -10,6 +10,9 @@ const Index = () => {
   const [showMatchDetailsModal, setShowMatchDetailsModal] = useState(false);
   const [selectedMatch, setSelectedMatch] = useState("");
   const [selectedBet, setSelectedBet] = useState("");
+  const [prefilledOdds, setPrefilledOdds] = useState("");
+  const [prefilledBetType, setPrefilledBetType] = useState("");
+  const [prefilledOption, setPrefilledOption] = useState("");
   const [selectedMatchDetails, setSelectedMatchDetails] = useState<typeof matches[0] | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredMatches, setFilteredMatches] = useState<typeof matches>([]);
@@ -59,10 +62,38 @@ const Index = () => {
     setShowMatchDetailsModal(true);
   };
 
-  const handleBetFromDetailsModal = (betType: string, odd: string) => {
+  const handleBetFromDetailsModal = (betType: string, odd: string, marketType?: string, marketOption?: string) => {
     if (selectedMatchDetails) {
       setSelectedMatch(`${selectedMatchDetails.homeTeam} x ${selectedMatchDetails.awayTeam}`);
       setSelectedBet(`${betType} - ${odd}`);
+      
+      // For moneyline bets, prefill the odds, for other markets, don't prefill odds
+      if (marketType === "Moneyline") {
+        setPrefilledOdds(odd);
+        setPrefilledBetType("Moneyline");
+        setPrefilledOption(marketOption || "");
+      } else if (marketType === "Spreads") {
+        setPrefilledOdds("");
+        setPrefilledBetType("Spreads");
+        setPrefilledOption("");
+      } else if (marketType === "Totals") {
+        setPrefilledOdds("");
+        setPrefilledBetType("Totals");
+        setPrefilledOption("");
+      } else if (marketType === "Both Teams to Score") {
+        setPrefilledOdds("");
+        setPrefilledBetType("Both Teams to Score");
+        setPrefilledOption("");
+      } else if (marketType === "Corners") {
+        setPrefilledOdds("");
+        setPrefilledBetType("Corners");
+        setPrefilledOption("");
+      } else {
+        setPrefilledOdds(odd);
+        setPrefilledBetType("Moneyline");
+        setPrefilledOption("");
+      }
+      
       setShowBetModal(true);
     }
   };
@@ -182,6 +213,9 @@ const Index = () => {
         onOpenChange={setShowBetModal}
         selectedMatch={selectedMatch}
         selectedBet={selectedBet}
+        prefilledOdds={prefilledOdds}
+        prefilledBetType={prefilledBetType}
+        prefilledOption={prefilledOption}
       />
 
       <MatchDetailsModal
