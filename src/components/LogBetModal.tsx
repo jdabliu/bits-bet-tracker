@@ -28,8 +28,67 @@ const LogBetModal = ({ open, onOpenChange, selectedMatch = "Flamengo x Chelsea",
   const [odds, setOdds] = useState("");
   const [stake, setStake] = useState("");
   const [selectedPeriod, setSelectedPeriod] = useState("Match");
-  const [selectedBetType, setSelectedBetType] = useState("Spreads");
+  const [selectedBetType, setSelectedBetType] = useState("Moneyline");
   const [selectedOption, setSelectedOption] = useState("");
+
+  // Determinar as opções baseadas no tipo de aposta selecionado
+  const getBetOptions = () => {
+    switch(selectedBetType) {
+      case "Moneyline":
+        return [
+          { value: "home", label: `${selectedMatch.split(' x ')[0]} (Casa)` },
+          { value: "draw", label: "Empate" },
+          { value: "away", label: `${selectedMatch.split(' x ')[1]} (Fora)` }
+        ];
+      case "Spreads":
+        return [
+          { value: "home_0.0", label: `0 ${selectedMatch.split(' x ')[0]}` },
+          { value: "away_0.0", label: `0 ${selectedMatch.split(' x ')[1]}` },
+          { value: "home_-0.25", label: `-0.25 ${selectedMatch.split(' x ')[0]}` },
+          { value: "away_0.25", label: `+0.25 ${selectedMatch.split(' x ')[1]}` },
+          { value: "home_0.25", label: `+0.25 ${selectedMatch.split(' x ')[0]}` },
+          { value: "away_-0.25", label: `-0.25 ${selectedMatch.split(' x ')[1]}` },
+          { value: "home_-0.5", label: `-0.5 ${selectedMatch.split(' x ')[0]}` },
+          { value: "away_0.5", label: `+0.5 ${selectedMatch.split(' x ')[1]}` },
+          { value: "home_0.5", label: `+0.5 ${selectedMatch.split(' x ')[0]}` },
+          { value: "away_-0.5", label: `-0.5 ${selectedMatch.split(' x ')[1]}` },
+          { value: "home_-0.75", label: `-0.75 ${selectedMatch.split(' x ')[0]}` },
+          { value: "away_0.75", label: `+0.75 ${selectedMatch.split(' x ')[1]}` },
+          { value: "home_0.75", label: `+0.75 ${selectedMatch.split(' x ')[0]}` },
+          { value: "away_-0.75", label: `-0.75 ${selectedMatch.split(' x ')[1]}` },
+          { value: "home_-1.0", label: `-1 ${selectedMatch.split(' x ')[0]}` },
+          { value: "away_1.0", label: `+1 ${selectedMatch.split(' x ')[1]}` },
+          { value: "home_-1.25", label: `-1.25 ${selectedMatch.split(' x ')[0]}` },
+          { value: "away_1.25", label: `+1.25 ${selectedMatch.split(' x ')[1]}` }
+        ];
+      case "Totals":
+        return [
+          { value: "over_0.5", label: "Over 0.5 gols" },
+          { value: "under_0.5", label: "Under 0.5 gols" },
+          { value: "over_1.5", label: "Over 1.5 gols" },
+          { value: "under_1.5", label: "Under 1.5 gols" },
+          { value: "over_2.5", label: "Over 2.5 gols" },
+          { value: "under_2.5", label: "Under 2.5 gols" },
+          { value: "over_3.5", label: "Over 3.5 gols" },
+          { value: "under_3.5", label: "Under 3.5 gols" }
+        ];
+      default:
+        return [];
+    }
+  };
+
+  const getBetTypeLabel = () => {
+    switch(selectedBetType) {
+      case "Moneyline":
+        return "Moneyline (3-way)";
+      case "Spreads":
+        return "Spreads (Handicap)";
+      case "Totals":
+        return "Under/Over";
+      default:
+        return selectedBetType;
+    }
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -47,14 +106,14 @@ const LogBetModal = ({ open, onOpenChange, selectedMatch = "Flamengo x Chelsea",
         
         <div className="max-sm:overflow-auto max-sm:px-4">
           <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Match Selection */}
+            {/* Match Selection - Já pré-preenchido */}
             <div className="space-y-2">
-              <Select defaultValue={selectedMatch}>
+              <Select value={selectedMatch} disabled>
                 <SelectTrigger className="w-full bg-background border-border">
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent className="bg-popover border-border">
-                  <SelectItem value="Flamengo x Chelsea">{selectedMatch} [Pre-match]</SelectItem>
+                <SelectContent className="bg-popover border-border z-50">
+                  <SelectItem value={selectedMatch}>{selectedMatch} [Pre-match]</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -65,7 +124,7 @@ const LogBetModal = ({ open, onOpenChange, selectedMatch = "Flamengo x Chelsea",
                 <SelectTrigger className="w-full bg-background border-border">
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent className="bg-popover border-border">
+                <SelectContent className="bg-popover border-border z-50">
                   <SelectItem value="Match">Match</SelectItem>
                   <SelectItem value="1st Half">1st Half</SelectItem>
                 </SelectContent>
@@ -78,7 +137,7 @@ const LogBetModal = ({ open, onOpenChange, selectedMatch = "Flamengo x Chelsea",
                 <SelectTrigger className="w-full bg-background border-border">
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent className="bg-popover border-border">
+                <SelectContent className="bg-popover border-border z-50">
                   <SelectItem value="Moneyline">Moneyline (3-way)</SelectItem>
                   <SelectItem value="Spreads">Spreads</SelectItem>
                   <SelectItem value="Totals">Totals</SelectItem>
@@ -86,38 +145,25 @@ const LogBetModal = ({ open, onOpenChange, selectedMatch = "Flamengo x Chelsea",
               </Select>
             </div>
 
-            {/* Specific Option Selection */}
+            {/* Specific Option Selection - Dinâmico baseado no tipo de aposta */}
             <div className="space-y-2">
               <Select value={selectedOption} onValueChange={setSelectedOption}>
                 <SelectTrigger className="w-full bg-background border-border">
-                  <SelectValue placeholder="-1.25 Flamengo" />
+                  <SelectValue placeholder={`${getBetTypeLabel()}`} />
                 </SelectTrigger>
-                <SelectContent className="bg-popover border-border">
-                  <SelectItem value="home_0.0">0 Flamengo</SelectItem>
-                  <SelectItem value="away_0.0">0 Chelsea</SelectItem>
-                  <SelectItem value="home_-0.25">-0.25 Flamengo</SelectItem>
-                  <SelectItem value="away_0.25">+0.25 Chelsea</SelectItem>
-                  <SelectItem value="home_0.25">+0.25 Flamengo</SelectItem>
-                  <SelectItem value="away_-0.25">-0.25 Chelsea</SelectItem>
-                  <SelectItem value="home_-0.5">-0.5 Flamengo</SelectItem>
-                  <SelectItem value="away_0.5">+0.5 Chelsea</SelectItem>
-                  <SelectItem value="home_0.5">+0.5 Flamengo</SelectItem>
-                  <SelectItem value="away_-0.5">-0.5 Chelsea</SelectItem>
-                  <SelectItem value="home_-0.75">-0.75 Flamengo</SelectItem>
-                  <SelectItem value="away_0.75">+0.75 Chelsea</SelectItem>
-                  <SelectItem value="home_0.75">+0.75 Flamengo</SelectItem>
-                  <SelectItem value="away_-0.75">-0.75 Chelsea</SelectItem>
-                  <SelectItem value="home_-1.0">-1 Flamengo</SelectItem>
-                  <SelectItem value="away_1.0">+1 Chelsea</SelectItem>
-                  <SelectItem value="home_-1.25">-1.25 Flamengo</SelectItem>
-                  <SelectItem value="away_1.25">+1.25 Chelsea</SelectItem>
+                <SelectContent className="bg-popover border-border z-50">
+                  {getBetOptions().map((option) => (
+                    <SelectItem key={option.value} value={option.value}>
+                      {option.label}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>
 
             <Separator className="border-border" />
 
-            {/* Odds, Stake and EV */}
+            {/* Odds and Stake */}
             <div className="mt-4 flex flex-col gap-4">
               <div className="flex items-end gap-2">
                 <div className="space-y-2 flex-1">
@@ -148,13 +194,6 @@ const LogBetModal = ({ open, onOpenChange, selectedMatch = "Flamengo x Chelsea",
                     />
                   </div>
                 </div>
-                
-                <div className="space-y-2">
-                  <Label>EV</Label>
-                  <div className="flex h-10 w-24 items-center justify-center rounded px-3 border border-muted bg-muted/10 text-muted-foreground">
-                    <p className="truncate font-mono text-sm">N/A</p>
-                  </div>
-                </div>
               </div>
 
               {/* Tags Selection */}
@@ -165,7 +204,7 @@ const LogBetModal = ({ open, onOpenChange, selectedMatch = "Flamengo x Chelsea",
                       <span className="text-muted-foreground">Select tags (optional)</span>
                     </div>
                   </SelectTrigger>
-                  <SelectContent className="bg-popover border-border">
+                  <SelectContent className="bg-popover border-border z-50">
                     <SelectItem value="value-bet">Value Bet</SelectItem>
                     <SelectItem value="safe-bet">Safe Bet</SelectItem>
                     <SelectItem value="high-risk">High Risk</SelectItem>
