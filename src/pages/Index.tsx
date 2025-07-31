@@ -2,12 +2,15 @@ import { useState } from "react";
 import Header from "@/components/Header";
 import SearchBar from "@/components/SearchBar";
 import LogBetModal from "@/components/LogBetModal";
+import MatchDetailsModal from "@/components/MatchDetailsModal";
 import { Card } from "@/components/ui/card";
 
 const Index = () => {
   const [showBetModal, setShowBetModal] = useState(false);
+  const [showMatchDetailsModal, setShowMatchDetailsModal] = useState(false);
   const [selectedMatch, setSelectedMatch] = useState("");
   const [selectedBet, setSelectedBet] = useState("");
+  const [selectedMatchDetails, setSelectedMatchDetails] = useState<typeof matches[0] | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredMatches, setFilteredMatches] = useState<typeof matches>([]);
 
@@ -49,6 +52,19 @@ const Index = () => {
     setSelectedMatch(match);
     setSelectedBet(`${betType} - ${odd}`);
     setShowBetModal(true);
+  };
+
+  const handleMatchClick = (match: typeof matches[0]) => {
+    setSelectedMatchDetails(match);
+    setShowMatchDetailsModal(true);
+  };
+
+  const handleBetFromDetailsModal = (betType: string, odd: string) => {
+    if (selectedMatchDetails) {
+      setSelectedMatch(`${selectedMatchDetails.homeTeam} x ${selectedMatchDetails.awayTeam}`);
+      setSelectedBet(`${betType} - ${odd}`);
+      setShowBetModal(true);
+    }
   };
 
   const handleSearch = (query: string) => {
@@ -95,8 +111,12 @@ const Index = () => {
                     )}
                     
                     <div className="border-b border-border pb-4 last:border-b-0">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-4">
+                      <div className="flex items-center justify-between hover:bg-muted/20 rounded-lg p-2 -m-2 transition-colors">
+                        {/* Área clicável da partida */}
+                        <div 
+                          className="flex items-center gap-4 cursor-pointer flex-1"
+                          onClick={() => handleMatchClick(match)}
+                        >
                           <span className="font-bold text-lg">{match.time}</span>
                           <div className="flex items-center gap-2">
                             <span className="font-medium">{match.homeTeam}</span>
@@ -162,6 +182,13 @@ const Index = () => {
         onOpenChange={setShowBetModal}
         selectedMatch={selectedMatch}
         selectedBet={selectedBet}
+      />
+
+      <MatchDetailsModal
+        open={showMatchDetailsModal}
+        onOpenChange={setShowMatchDetailsModal}
+        match={selectedMatchDetails}
+        onBetClick={handleBetFromDetailsModal}
       />
     </div>
   );
