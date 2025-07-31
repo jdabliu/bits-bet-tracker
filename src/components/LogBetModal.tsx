@@ -68,13 +68,6 @@ const LogBetModal = ({
   const [isBookmakerDropdownOpen, setIsBookmakerDropdownOpen] = useState(false);
   const availableBookmakers = ["7k", "Bet365", "Pinnacle", "BetBra"];
 
-  // Effect to update state when prefilled values change
-  useEffect(() => {
-    if (prefilledOdds) setOdds(prefilledOdds);
-    if (prefilledBetType) setSelectedBetType(prefilledBetType);
-    if (prefilledOption) setSelectedOption(prefilledOption);
-  }, [prefilledOdds, prefilledBetType, prefilledOption]);
-
   // Effect to reset form when modal closes
   useEffect(() => {
     if (!open) {
@@ -90,6 +83,13 @@ const LogBetModal = ({
       setIsBookmakerDropdownOpen(false);
     }
   }, [open]);
+
+  // Effect to update state when prefilled values change
+  useEffect(() => {
+    if (open && prefilledOdds) setOdds(prefilledOdds);
+    if (open && prefilledBetType) setSelectedBetType(prefilledBetType);
+    if (open && prefilledOption) setSelectedOption(prefilledOption);
+  }, [open, prefilledOdds, prefilledBetType, prefilledOption]);
 
   const handleTagToggle = (tag: string) => {
     setSelectedTags(prev => 
@@ -140,14 +140,18 @@ const LogBetModal = ({
         ];
       case "Totals":
         return [
-          { value: "over_0.5", label: "Over 0.5 goals" },
-          { value: "under_0.5", label: "Under 0.5 goals" },
-          { value: "over_1.5", label: "Over 1.5 goals" },
-          { value: "under_1.5", label: "Under 1.5 goals" },
-          { value: "over_2.5", label: "Over 2.5 goals" },
-          { value: "under_2.5", label: "Under 2.5 goals" },
-          { value: "over_3.5", label: "Over 3.5 goals" },
-          { value: "under_3.5", label: "Under 3.5 goals" }
+          { value: "over_2.00", label: "Over 2.00 goals" },
+          { value: "under_2.00", label: "Under 2.00 goals" },
+          { value: "over_2.25", label: "Over 2.25 goals" },
+          { value: "under_2.25", label: "Under 2.25 goals" },
+          { value: "over_2.50", label: "Over 2.50 goals" },
+          { value: "under_2.50", label: "Under 2.50 goals" },
+          { value: "over_2.75", label: "Over 2.75 goals" },
+          { value: "under_2.75", label: "Under 2.75 goals" },
+          { value: "over_3.00", label: "Over 3.00 goals" },
+          { value: "under_3.00", label: "Under 3.00 goals" },
+          { value: "over_3.25", label: "Over 3.25 goals" },
+          { value: "under_3.25", label: "Under 3.25 goals" }
         ];
       case "Both Teams to Score":
         return [
