@@ -17,12 +17,12 @@ const Index = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredMatches, setFilteredMatches] = useState<typeof matches>([]);
 
-  // Dados das partidas baseados no HTML fornecido
+  // Match data based on provided HTML
   const matches = [
     {
       id: 1,
-      date: "Quarta-feira, 30 de julho de 2025",
-      time: "16:00",
+      date: "Wednesday, July 30th, 2025",
+      time: "4:00 PM",
       homeTeam: "Athletico Paranaense",
       awayTeam: "Vasco da Gama",
       homeOdd: "2.13",
@@ -31,8 +31,8 @@ const Index = () => {
     },
     {
       id: 2,
-      date: "Quarta-feira, 30 de julho de 2025",
-      time: "16:00",
+      date: "Wednesday, July 30th, 2025",
+      time: "4:00 PM",
       homeTeam: "Palmeiras",
       awayTeam: "Juventude",
       homeOdd: "1.29",
@@ -41,8 +41,8 @@ const Index = () => {
     },
     {
       id: 3,
-      date: "Quarta-feira, 30 de julho de 2025",
-      time: "19:00",
+      date: "Wednesday, July 30th, 2025",
+      time: "7:00 PM",
       homeTeam: "RB Bragantino",
       awayTeam: "Fortaleza",
       homeOdd: "1.72",
@@ -126,7 +126,7 @@ const Index = () => {
             
             <div className="mb-6">
               <h3 className="text-lg font-semibold text-foreground mb-4">
-                {searchQuery ? `Resultados para "${searchQuery}"` : "Próximas partidas"}
+                {searchQuery ? `Results for "${searchQuery}"` : "Upcoming matches"}
                 {searchQuery && ` (${displayMatches.length})`}
               </h3>
             </div>
@@ -143,7 +143,7 @@ const Index = () => {
                     
                     <div className="border-b border-border pb-4 last:border-b-0">
                       <div className="flex items-center justify-between hover:bg-muted/20 rounded-lg p-2 -m-2 transition-colors">
-                        {/* Área clicável da partida */}
+                        {/* Clickable match area */}
                         <div 
                           className="flex items-center gap-4 cursor-pointer flex-1"
                           onClick={() => handleMatchClick(match)}
@@ -171,7 +171,7 @@ const Index = () => {
                           <div className="flex items-center gap-1">
                             <span className="text-xs text-muted-foreground">N</span>
                             <button
-                              onClick={() => handleBetClick(`${match.homeTeam} x ${match.awayTeam}`, "Empate", match.drawOdd)}
+                              onClick={() => handleBetClick(`${match.homeTeam} x ${match.awayTeam}`, "Draw", match.drawOdd)}
                               className="px-3 py-2 bg-muted/50 hover:bg-muted border border-border rounded text-sm font-medium transition-colors"
                             >
                               {match.drawOdd}
@@ -200,7 +200,7 @@ const Index = () => {
                 ))
               ) : searchQuery ? (
                 <div className="text-center py-8">
-                  <p className="text-muted-foreground">Nenhum evento encontrado para "{searchQuery}"</p>
+                  <p className="text-muted-foreground">No events found for "{searchQuery}"</p>
                 </div>
               ) : null}
             </div>

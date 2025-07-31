@@ -58,12 +58,12 @@ const MatchDetailsModal = ({
           <div className="flex items-center justify-between p-4 bg-muted/20 rounded-lg">
             <div className="text-center flex-1">
               <div className="font-semibold text-lg">{match.homeTeam}</div>
-              <div className="text-sm text-muted-foreground">Casa</div>
+              <div className="text-sm text-muted-foreground">Home</div>
             </div>
             <div className="text-2xl font-bold text-muted-foreground px-4">VS</div>
             <div className="text-center flex-1">
               <div className="font-semibold text-lg">{match.awayTeam}</div>
-              <div className="text-sm text-muted-foreground">Visitante</div>
+              <div className="text-sm text-muted-foreground">Away</div>
             </div>
           </div>
 
@@ -89,7 +89,7 @@ const MatchDetailsModal = ({
               <div className="text-center space-y-2">
                 <div className="text-xs text-muted-foreground">X</div>
                 <Button
-                  onClick={() => handleOddClick("Empate", match.drawOdd, "Moneyline", "draw")}
+                  onClick={() => handleOddClick("Draw", match.drawOdd, "Moneyline", "draw")}
                   className="w-full bg-muted/50 hover:bg-muted text-foreground border border-border"
                   variant="outline"
                 >
@@ -98,7 +98,7 @@ const MatchDetailsModal = ({
                     <TrendingUp className="h-3 w-3 text-success" />
                   </div>
                 </Button>
-                <div className="text-xs font-medium">Empate</div>
+                <div className="text-xs font-medium">Draw</div>
               </div>
 
               <div className="text-center space-y-2">
@@ -130,7 +130,7 @@ const MatchDetailsModal = ({
                 onClick={() => handleOddClick("", "", "Totals", "")}
               >
                 <div className="text-center">
-                  <div className="text-xs text-muted-foreground">Total de Gols</div>
+                  <div className="text-xs text-muted-foreground">Total Goals</div>
                   <div className="font-medium">+</div>
                 </div>
               </Button>
@@ -150,7 +150,7 @@ const MatchDetailsModal = ({
                 onClick={() => handleOddClick("", "", "Both Teams to Score", "")}
               >
                 <div className="text-center">
-                  <div className="text-xs text-muted-foreground">Ambos Marcam</div>
+                  <div className="text-xs text-muted-foreground">Both Teams to Score</div>
                   <div className="font-medium">+</div>
                 </div>
               </Button>
@@ -160,7 +160,7 @@ const MatchDetailsModal = ({
                 onClick={() => handleOddClick("", "", "Corners", "")}
               >
                 <div className="text-center">
-                  <div className="text-xs text-muted-foreground">Escanteios</div>
+                  <div className="text-xs text-muted-foreground">Corners</div>
                   <div className="font-medium">+</div>
                 </div>
               </Button>
@@ -174,7 +174,7 @@ const MatchDetailsModal = ({
               variant="secondary"
               className="bg-secondary hover:bg-secondary/80"
             >
-              Fechar
+              Close
             </Button>
           </div>
         </div>

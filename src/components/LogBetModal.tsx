@@ -113,9 +113,9 @@ const LogBetModal = ({
     switch(selectedBetType) {
       case "Moneyline":
         return [
-          { value: "home", label: `${selectedMatch.split(' x ')[0]} (Casa)` },
-          { value: "draw", label: "Empate" },
-          { value: "away", label: `${selectedMatch.split(' x ')[1]} (Fora)` }
+          { value: "home", label: `${selectedMatch.split(' x ')[0]} (Home)` },
+          { value: "draw", label: "Draw" },
+          { value: "away", label: `${selectedMatch.split(' x ')[1]} (Away)` }
         ];
       case "Spreads":
         return [
@@ -140,28 +140,28 @@ const LogBetModal = ({
         ];
       case "Totals":
         return [
-          { value: "over_0.5", label: "Over 0.5 gols" },
-          { value: "under_0.5", label: "Under 0.5 gols" },
-          { value: "over_1.5", label: "Over 1.5 gols" },
-          { value: "under_1.5", label: "Under 1.5 gols" },
-          { value: "over_2.5", label: "Over 2.5 gols" },
-          { value: "under_2.5", label: "Under 2.5 gols" },
-          { value: "over_3.5", label: "Over 3.5 gols" },
-          { value: "under_3.5", label: "Under 3.5 gols" }
+          { value: "over_0.5", label: "Over 0.5 goals" },
+          { value: "under_0.5", label: "Under 0.5 goals" },
+          { value: "over_1.5", label: "Over 1.5 goals" },
+          { value: "under_1.5", label: "Under 1.5 goals" },
+          { value: "over_2.5", label: "Over 2.5 goals" },
+          { value: "under_2.5", label: "Under 2.5 goals" },
+          { value: "over_3.5", label: "Over 3.5 goals" },
+          { value: "under_3.5", label: "Under 3.5 goals" }
         ];
       case "Both Teams to Score":
         return [
-          { value: "yes", label: "Sim" },
-          { value: "no", label: "Não" }
+          { value: "yes", label: "Yes" },
+          { value: "no", label: "No" }
         ];
       case "Corners":
         return [
-          { value: "over_8.5", label: "Over 8.5 escanteios" },
-          { value: "under_8.5", label: "Under 8.5 escanteios" },
-          { value: "over_9.5", label: "Over 9.5 escanteios" },
-          { value: "under_9.5", label: "Under 9.5 escanteios" },
-          { value: "over_10.5", label: "Over 10.5 escanteios" },
-          { value: "under_10.5", label: "Under 10.5 escanteios" }
+          { value: "over_8.5", label: "Over 8.5 corners" },
+          { value: "under_8.5", label: "Under 8.5 corners" },
+          { value: "over_9.5", label: "Over 9.5 corners" },
+          { value: "under_9.5", label: "Under 9.5 corners" },
+          { value: "over_10.5", label: "Over 10.5 corners" },
+          { value: "under_10.5", label: "Under 10.5 corners" }
         ];
       default:
         return [];
@@ -177,9 +177,9 @@ const LogBetModal = ({
       case "Totals":
         return "Under/Over";
       case "Both Teams to Score":
-        return "Ambos Marcam";
+        return "Both Teams to Score";
       case "Corners":
-        return "Escanteios";
+        return "Corners";
       default:
         return selectedBetType;
     }
@@ -337,8 +337,8 @@ const LogBetModal = ({
                     >
                       <span className="text-muted-foreground">
                         {selectedTags.length > 0 
-                          ? `${selectedTags.length} tag(s) selecionada(s)`
-                          : "Selecionar tags"
+                          ? `${selectedTags.length} tag(s) selected`
+                          : "Select tags"
                         }
                       </span>
                       <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
@@ -351,7 +351,7 @@ const LogBetModal = ({
                   >
                     <Command className="bg-popover">
                       <CommandInput 
-                        placeholder="Buscar tags..." 
+                        placeholder="Search tags..." 
                         className="h-9"
                         value={newTagInput}
                         onValueChange={setNewTagInput}
@@ -360,7 +360,7 @@ const LogBetModal = ({
                         <CommandEmpty>
                           <div className="text-center py-6">
                             <p className="text-sm text-muted-foreground mb-2">
-                              Nenhuma tag encontrada.
+                              No tag found.
                             </p>
                             {newTagInput.trim() && (
                               <Button
@@ -369,7 +369,7 @@ const LogBetModal = ({
                                 className="bg-primary hover:bg-primary/90"
                               >
                                 <Plus className="h-3 w-3 mr-1" />
-                                Criar "{newTagInput}"
+                                Create "{newTagInput}"
                               </Button>
                             )}
                           </div>
@@ -392,7 +392,7 @@ const LogBetModal = ({
                                 <Check className="h-4 w-4 visible" />
                               )}
                             </div>
-                            <span>(Selecionar Todas)</span>
+                            <span>(Select All)</span>
                           </CommandItem>
                           
                           {/* Available Tags */}
@@ -421,7 +421,7 @@ const LogBetModal = ({
                                 className="cursor-pointer"
                               >
                                 <Plus className="mr-2 h-4 w-4" />
-                                <span>Criar "{newTagInput}"</span>
+                                <span>Create "{newTagInput}"</span>
                               </CommandItem>
                             </CommandGroup>
                           </>
@@ -433,7 +433,7 @@ const LogBetModal = ({
                             onSelect={() => setIsTagDropdownOpen(false)}
                             className="cursor-pointer justify-center"
                           >
-                            Fechar
+                            Close
                           </CommandItem>
                         </CommandGroup>
                       </CommandList>
@@ -454,7 +454,7 @@ const LogBetModal = ({
                       className="w-full justify-between bg-background border-border"
                     >
                       <span className={selectedBookmaker ? "text-foreground" : "text-muted-foreground"}>
-                        {selectedBookmaker || "Selecionar bookmaker"}
+                        {selectedBookmaker || "Select bookmaker"}
                       </span>
                       <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                     </Button>
@@ -466,14 +466,14 @@ const LogBetModal = ({
                   >
                     <Command className="bg-popover">
                       <CommandInput 
-                        placeholder="Buscar bookmaker..." 
+                        placeholder="Search bookmaker..." 
                         className="h-9"
                       />
                       <CommandList className="max-h-[200px]">
                         <CommandEmpty>
                           <div className="text-center py-6">
                             <p className="text-sm text-muted-foreground">
-                              Nenhum bookmaker encontrado.
+                              No bookmaker found.
                             </p>
                           </div>
                         </CommandEmpty>
@@ -504,7 +504,7 @@ const LogBetModal = ({
                             onSelect={() => setIsBookmakerDropdownOpen(false)}
                             className="cursor-pointer justify-center"
                           >
-                            Fechar
+                            Close
                           </CommandItem>
                         </CommandGroup>
                       </CommandList>
