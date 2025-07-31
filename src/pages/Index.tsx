@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Header from "@/components/Header";
 import SearchBar from "@/components/SearchBar";
 import LogBetModal from "@/components/LogBetModal";
@@ -6,6 +7,7 @@ import MatchDetailsModal from "@/components/MatchDetailsModal";
 import { Card } from "@/components/ui/card";
 
 const Index = () => {
+  const navigate = useNavigate();
   const [showBetModal, setShowBetModal] = useState(false);
   const [showMatchDetailsModal, setShowMatchDetailsModal] = useState(false);
   const [selectedMatch, setSelectedMatch] = useState("");
@@ -190,7 +192,7 @@ const Index = () => {
                           
                           <button 
                             className="font-bold text-xl text-muted-foreground hover:text-foreground transition-colors"
-                            onClick={() => handleMatchClick(match)}
+                            onClick={() => navigate(`/match/${match.id}`)}
                           >
                             +
                           </button>
