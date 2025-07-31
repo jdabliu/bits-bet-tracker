@@ -26,12 +26,12 @@ const OddsCard = ({
   const textColor = isActive ? "text-primary-foreground" : "text-card-foreground";
 
   return (
-    <Card className={`p-3 max-w-2xl mx-auto ${cardBg} border-border`}>
-      <div className={`text-center mb-3 text-sm font-medium ${textColor}`}>
+    <Card className={`p-2 max-w-2xl mx-auto ${cardBg} border-border`}>
+      <div className={`text-center mb-2 text-sm font-medium ${textColor}`}>
         {title}
       </div>
       
-      <div className="space-y-3">
+      <div className="space-y-2">
         <div className="flex justify-between items-center px-4">
           <span className={`text-xs ${textColor}`}>1</span>
           <span className={`text-xs ${textColor}`}>N</span>
