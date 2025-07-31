@@ -119,24 +119,18 @@ const LogBetModal = ({
         ];
       case "Spreads":
         return [
-          { value: "home_0.0", label: `0 ${selectedMatch.split(' x ')[0]}` },
-          { value: "away_0.0", label: `0 ${selectedMatch.split(' x ')[1]}` },
-          { value: "home_-0.25", label: `-0.25 ${selectedMatch.split(' x ')[0]}` },
-          { value: "away_0.25", label: `+0.25 ${selectedMatch.split(' x ')[1]}` },
+          { value: "home_0.5", label: `+0.50 ${selectedMatch.split(' x ')[0]}` },
+          { value: "away_0.5", label: `+0.50 ${selectedMatch.split(' x ')[1]}` },
           { value: "home_0.25", label: `+0.25 ${selectedMatch.split(' x ')[0]}` },
+          { value: "away_0.25", label: `+0.25 ${selectedMatch.split(' x ')[1]}` },
+          { value: "home_0.0", label: `+0.00 ${selectedMatch.split(' x ')[0]}` },
+          { value: "away_0.0", label: `+0.00 ${selectedMatch.split(' x ')[1]}` },
+          { value: "home_-0.25", label: `-0.25 ${selectedMatch.split(' x ')[0]}` },
           { value: "away_-0.25", label: `-0.25 ${selectedMatch.split(' x ')[1]}` },
-          { value: "home_-0.5", label: `-0.5 ${selectedMatch.split(' x ')[0]}` },
-          { value: "away_0.5", label: `+0.5 ${selectedMatch.split(' x ')[1]}` },
-          { value: "home_0.5", label: `+0.5 ${selectedMatch.split(' x ')[0]}` },
-          { value: "away_-0.5", label: `-0.5 ${selectedMatch.split(' x ')[1]}` },
+          { value: "home_-0.5", label: `-0.50 ${selectedMatch.split(' x ')[0]}` },
+          { value: "away_-0.5", label: `-0.50 ${selectedMatch.split(' x ')[1]}` },
           { value: "home_-0.75", label: `-0.75 ${selectedMatch.split(' x ')[0]}` },
-          { value: "away_0.75", label: `+0.75 ${selectedMatch.split(' x ')[1]}` },
-          { value: "home_0.75", label: `+0.75 ${selectedMatch.split(' x ')[0]}` },
-          { value: "away_-0.75", label: `-0.75 ${selectedMatch.split(' x ')[1]}` },
-          { value: "home_-1.0", label: `-1 ${selectedMatch.split(' x ')[0]}` },
-          { value: "away_1.0", label: `+1 ${selectedMatch.split(' x ')[1]}` },
-          { value: "home_-1.25", label: `-1.25 ${selectedMatch.split(' x ')[0]}` },
-          { value: "away_1.25", label: `+1.25 ${selectedMatch.split(' x ')[1]}` }
+          { value: "away_-0.75", label: `-0.75 ${selectedMatch.split(' x ')[1]}` }
         ];
       case "Totals":
         return [
