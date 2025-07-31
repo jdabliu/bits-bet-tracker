@@ -152,9 +152,7 @@ const MatchDetails = () => {
         prefilledOption={selectedBet?.market === "Moneyline" && selectedBet?.line ?
           selectedBet.line :
           selectedBet?.market === "Handicap" && selectedBet?.line ? 
-            selectedBet.type.includes(match.homeTeam) ? 
-              `home_${selectedBet.line}` : 
-              `away_${selectedBet.line}`
+            selectedBet.line
             : selectedBet?.market === "Over/Under" && selectedBet?.line ?
               selectedBet.type.includes("Mais de") ?
                 `over_${selectedBet.line}` :
