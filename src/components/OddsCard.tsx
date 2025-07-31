@@ -9,6 +9,7 @@ interface OddsCardProps {
   drawOdd?: string;
   awayOdd: string;
   isActive?: boolean;
+  onBetClick?: (betType: string, odd: string) => void;
 }
 
 const OddsCard = ({ 
@@ -18,7 +19,8 @@ const OddsCard = ({
   homeOdd, 
   drawOdd, 
   awayOdd,
-  isActive = false 
+  isActive = false,
+  onBetClick
 }: OddsCardProps) => {
   const cardBg = isActive ? "bg-primary" : "bg-card";
   const textColor = isActive ? "text-primary-foreground" : "text-card-foreground";
@@ -46,6 +48,7 @@ const OddsCard = ({
             variant="outline" 
             size="sm" 
             className="flex-1 bg-muted/50 hover:bg-muted text-foreground border-border"
+            onClick={() => onBetClick?.(homeTeam, homeOdd)}
           >
             {homeOdd} <span className="text-success ml-1">▲</span>
           </Button>
@@ -55,6 +58,7 @@ const OddsCard = ({
               variant="outline" 
               size="sm" 
               className="flex-1 bg-muted/50 hover:bg-muted text-foreground border-border"
+              onClick={() => onBetClick?.("Draw", drawOdd)}
             >
               {drawOdd} <span className="text-destructive ml-1">▼</span>
             </Button>
@@ -64,6 +68,7 @@ const OddsCard = ({
             variant="outline" 
             size="sm" 
             className="flex-1 bg-muted/50 hover:bg-muted text-foreground border-border"
+            onClick={() => onBetClick?.(awayTeam, awayOdd)}
           >
             {awayOdd} <span className="text-destructive ml-1">▼</span>
           </Button>

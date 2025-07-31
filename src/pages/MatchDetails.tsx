@@ -1,15 +1,25 @@
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import Header from "@/components/Header";
 import OddsCard from "@/components/OddsCard";
 import HandicapCard from "@/components/HandicapCard";
 import OverUnderCard from "@/components/OverUnderCard";
+import LogBetModal from "@/components/LogBetModal";
 
 interface MatchDetailsProps {
   onBack: () => void;
 }
 
 const MatchDetails = ({ onBack }: MatchDetailsProps) => {
+  const [showLogBetModal, setShowLogBetModal] = useState(false);
+  const [selectedBet, setSelectedBet] = useState<{ type: string; odd: string } | null>(null);
+
+  const handleBetClick = (betType: string, odd: string) => {
+    setSelectedBet({ type: betType, odd });
+    setShowLogBetModal(true);
+  };
+
   const handicapOptions = [
     { handicap: "+0.50", homeOdd: "1.35", awayOdd: "3.09" },
     { handicap: "+0.25", homeOdd: "1.43", awayOdd: "2.72" },
@@ -72,6 +82,7 @@ const MatchDetails = ({ onBack }: MatchDetailsProps) => {
               drawOdd="3.44"
               awayOdd="3.15"
               isActive={true}
+              onBetClick={handleBetClick}
             />
           </div>
 
@@ -97,14 +108,23 @@ const MatchDetails = ({ onBack }: MatchDetailsProps) => {
             homeTeam="FLAMENGO"
             awayTeam="CHELSEA"
             options={handicapOptions}
+            onBetClick={handleBetClick}
           />
 
           <OverUnderCard
             title="Pontos: mais/menos"
             options={overUnderOptions}
+            onBetClick={handleBetClick}
           />
         </div>
       </div>
+
+      <LogBetModal
+        open={showLogBetModal}
+        onOpenChange={setShowLogBetModal}
+        selectedMatch="Flamengo x Chelsea"
+        selectedBet={selectedBet?.type}
+      />
     </div>
   );
 };

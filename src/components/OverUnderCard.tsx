@@ -10,9 +10,10 @@ interface OverUnderOption {
 interface OverUnderCardProps {
   title: string;
   options: OverUnderOption[];
+  onBetClick?: (betType: string, odd: string) => void;
 }
 
-const OverUnderCard = ({ title, options }: OverUnderCardProps) => {
+const OverUnderCard = ({ title, options, onBetClick }: OverUnderCardProps) => {
   return (
     <Card className="p-4 bg-card border-border">
       <div className="text-center mb-4 font-medium text-primary bg-primary/20 py-2 rounded">
@@ -35,6 +36,7 @@ const OverUnderCard = ({ title, options }: OverUnderCardProps) => {
                 variant="outline" 
                 size="sm" 
                 className="bg-muted/30 hover:bg-muted text-foreground border-border"
+                onClick={() => onBetClick?.(`Mais de ${option.line}`, option.overOdd)}
               >
                 {option.overOdd} <span className="text-success ml-1">▲</span>
               </Button>
@@ -43,6 +45,7 @@ const OverUnderCard = ({ title, options }: OverUnderCardProps) => {
                 variant="outline" 
                 size="sm" 
                 className="bg-muted/30 hover:bg-muted text-foreground border-border"
+                onClick={() => onBetClick?.(`Menos de ${option.line}`, option.underOdd)}
               >
                 {option.underOdd} <span className="text-success ml-1">▲</span>
               </Button>
