@@ -11,12 +11,26 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+  CommandSeparator,
+} from "@/components/ui/command";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { X, Plus, Check } from "lucide-react";
-import { useState, useEffect, useRef } from "react";
+import { X, Plus, Check, ChevronsUpDown } from "lucide-react";
+import { useState, useEffect } from "react";
 
 interface LogBetModalProps {
   open: boolean;
@@ -50,7 +64,6 @@ const LogBetModal = ({
   ]);
   const [newTagInput, setNewTagInput] = useState("");
   const [isTagDropdownOpen, setIsTagDropdownOpen] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
 
   // Effect to update state when prefilled values change
   useEffect(() => {
@@ -72,23 +85,6 @@ const LogBetModal = ({
       setIsTagDropdownOpen(false);
     }
   }, [open]);
-
-  // Effect to handle clicking outside dropdown
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setIsTagDropdownOpen(false);
-      }
-    };
-
-    if (isTagDropdownOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
-    }
-
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [isTagDropdownOpen]);
 
   const handleTagToggle = (tag: string) => {
     setSelectedTags(prev => 
@@ -324,69 +320,120 @@ const LogBetModal = ({
                   </div>
                 )}
 
-                {/* Custom Tags Dropdown */}
-                <div className="relative" ref={dropdownRef}>
-                  <button
-                    type="button"
-                    onClick={() => setIsTagDropdownOpen(!isTagDropdownOpen)}
-                    className="w-full bg-background border border-border rounded-md px-3 py-2 text-left hover:bg-muted/20 transition-colors"
+                {/* Advanced Tags Popover */}
+                <Popover open={isTagDropdownOpen} onOpenChange={setIsTagDropdownOpen}>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      role="combobox"
+                      aria-expanded={isTagDropdownOpen}
+                      className="w-full justify-between bg-background border-border"
+                    >
+                      <span className="text-muted-foreground">
+                        {selectedTags.length > 0 
+                          ? `${selectedTags.length} tag(s) selecionada(s)`
+                          : "Selecionar tags"
+                        }
+                      </span>
+                      <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent 
+                    className="w-[--radix-popover-trigger-width] p-0 bg-popover border-border" 
+                    side="top"
+                    align="start"
                   >
-                    <span className="text-muted-foreground">
-                      {selectedTags.length > 0 
-                        ? `${selectedTags.length} tag(s) selecionada(s)`
-                        : "Selecionar tags"
-                      }
-                    </span>
-                  </button>
-                  
-                  {isTagDropdownOpen && (
-                    <div className="absolute bottom-full left-0 right-0 mb-1 bg-popover border border-border rounded-md shadow-lg z-50 max-h-48 overflow-y-auto">
-                      <div className="p-2">
-                        {/* New Tag Input */}
-                        <div className="flex gap-2 mb-2">
-                          <Input
-                            value={newTagInput}
-                            onChange={(e) => setNewTagInput(e.target.value)}
-                            placeholder="Nova tag..."
-                            className="flex-1 h-8 bg-background border-border"
-                            onKeyDown={(e) => {
-                              if (e.key === 'Enter') {
-                                e.preventDefault();
-                                handleCreateNewTag();
+                    <Command className="bg-popover">
+                      <CommandInput 
+                        placeholder="Buscar tags..." 
+                        className="h-9"
+                        value={newTagInput}
+                        onValueChange={setNewTagInput}
+                      />
+                      <CommandList className="max-h-[200px]">
+                        <CommandEmpty>
+                          <div className="text-center py-6">
+                            <p className="text-sm text-muted-foreground mb-2">
+                              Nenhuma tag encontrada.
+                            </p>
+                            {newTagInput.trim() && (
+                              <Button
+                                size="sm"
+                                onClick={handleCreateNewTag}
+                                className="bg-primary hover:bg-primary/90"
+                              >
+                                <Plus className="h-3 w-3 mr-1" />
+                                Criar "{newTagInput}"
+                              </Button>
+                            )}
+                          </div>
+                        </CommandEmpty>
+                        
+                        <CommandGroup>
+                          {/* Select All Option */}
+                          <CommandItem
+                            onSelect={() => {
+                              if (selectedTags.length === availableTags.length) {
+                                setSelectedTags([]);
+                              } else {
+                                setSelectedTags([...availableTags]);
                               }
                             }}
-                          />
-                          <Button
-                            type="button"
-                            size="sm"
-                            onClick={handleCreateNewTag}
-                            disabled={!newTagInput.trim()}
-                            className="h-8 px-2 bg-primary hover:bg-primary/90"
+                            className="cursor-pointer"
                           >
-                            <Plus className="h-3 w-3" />
-                          </Button>
-                        </div>
-                        
-                        {/* Available Tags */}
-                        <div className="space-y-1">
-                          {availableTags.map((tag) => (
-                            <button
-                              key={tag}
-                              type="button"
-                              onClick={() => handleTagToggle(tag)}
-                              className="w-full flex items-center justify-between px-2 py-1.5 hover:bg-muted/50 rounded text-sm text-left transition-colors"
-                            >
-                              <span>{tag}</span>
-                              {selectedTags.includes(tag) && (
-                                <Check className="h-3 w-3 text-primary" />
+                            <div className="mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary opacity-50 [&_svg]:invisible">
+                              {selectedTags.length === availableTags.length && (
+                                <Check className="h-4 w-4 visible" />
                               )}
-                            </button>
+                            </div>
+                            <span>(Selecionar Todas)</span>
+                          </CommandItem>
+                          
+                          {/* Available Tags */}
+                          {availableTags.map((tag) => (
+                            <CommandItem
+                              key={tag}
+                              onSelect={() => handleTagToggle(tag)}
+                              className="cursor-pointer"
+                            >
+                              <div className="mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary opacity-50 [&_svg]:invisible">
+                                {selectedTags.includes(tag) && (
+                                  <Check className="h-4 w-4 visible" />
+                                )}
+                              </div>
+                              <span>{tag}</span>
+                            </CommandItem>
                           ))}
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </div>
+                        </CommandGroup>
+                        
+                        {newTagInput.trim() && !availableTags.includes(newTagInput.trim()) && (
+                          <>
+                            <CommandSeparator />
+                            <CommandGroup>
+                              <CommandItem
+                                onSelect={handleCreateNewTag}
+                                className="cursor-pointer"
+                              >
+                                <Plus className="mr-2 h-4 w-4" />
+                                <span>Criar "{newTagInput}"</span>
+                              </CommandItem>
+                            </CommandGroup>
+                          </>
+                        )}
+                        
+                        <CommandSeparator />
+                        <CommandGroup>
+                          <CommandItem
+                            onSelect={() => setIsTagDropdownOpen(false)}
+                            className="cursor-pointer justify-center"
+                          >
+                            Fechar
+                          </CommandItem>
+                        </CommandGroup>
+                      </CommandList>
+                    </Command>
+                  </PopoverContent>
+                </Popover>
               </div>
             </div>
 
