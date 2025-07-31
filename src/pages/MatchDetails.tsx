@@ -51,6 +51,7 @@ const MatchDetails = () => {
   const match = matches.find(m => m.id === matchId) || matches[0];
 
   const handleBetClick = (betType: string, odd: string, market?: string, line?: string) => {
+    console.log("handleBetClick called with:", { betType, odd, market, line });
     setSelectedBet({ type: betType, odd, market, line });
     setShowLogBetModal(true);
   };
