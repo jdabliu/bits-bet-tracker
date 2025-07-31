@@ -149,15 +149,17 @@ const MatchDetails = () => {
         prefilledOdds={selectedBet?.odd || ""}
         prefilledBetType={selectedBet?.market === "Handicap" ? "Spreads" : 
                        selectedBet?.market === "Over/Under" ? "Totals" : "Moneyline"}
-        prefilledOption={selectedBet?.market === "Handicap" && selectedBet?.line ? 
-          selectedBet.type.includes(match.homeTeam) ? 
-            `home_${selectedBet.line.replace('+', '')}` : 
-            `away_${selectedBet.line.replace('+', '')}`
-          : selectedBet?.market === "Over/Under" && selectedBet?.line ?
-            selectedBet.type.includes("Mais de") ?
-              `over_${selectedBet.line}` :
-              `under_${selectedBet.line}`
-          : ""
+        prefilledOption={selectedBet?.market === "Moneyline" && selectedBet?.line ?
+          selectedBet.line :
+          selectedBet?.market === "Handicap" && selectedBet?.line ? 
+            selectedBet.type.includes(match.homeTeam) ? 
+              `home_${selectedBet.line.replace('+', '')}` : 
+              `away_${selectedBet.line.replace('+', '')}`
+            : selectedBet?.market === "Over/Under" && selectedBet?.line ?
+              selectedBet.type.includes("Mais de") ?
+                `over_${selectedBet.line}` :
+                `under_${selectedBet.line}`
+            : ""
         }
       />
     </div>
