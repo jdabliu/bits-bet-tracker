@@ -35,7 +35,7 @@ const HandicapCard = ({ title, homeTeam, awayTeam, options, onBetClick }: Handic
               variant="outline" 
               size="sm" 
               className="h-10 bg-secondary/50 hover:bg-secondary border-border font-medium"
-              onClick={() => onBetClick?.(`${homeTeam} ${option.handicap}`, option.homeOdd, "Handicap", option.handicap)}
+              onClick={() => onBetClick?.(`${homeTeam} ${option.handicap}`, option.homeOdd, "Handicap", option.handicap.replace('+', ''))}
             >
               <div className="text-center">
                 <div className="text-xs text-muted-foreground">{option.handicap}</div>
@@ -51,7 +51,7 @@ const HandicapCard = ({ title, homeTeam, awayTeam, options, onBetClick }: Handic
               variant="outline" 
               size="sm" 
               className="h-10 bg-secondary/50 hover:bg-secondary border-border font-medium"
-              onClick={() => onBetClick?.(`${awayTeam} ${option.handicap}`, option.awayOdd, "Handicap", option.handicap)}
+              onClick={() => onBetClick?.(`${awayTeam} ${option.handicap}`, option.awayOdd, "Handicap", option.handicap.replace('+', ''))}
             >
               <div className="text-center">
                 <div className="text-xs text-muted-foreground">{option.handicap}</div>
