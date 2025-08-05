@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { useMatchDetails } from "@/hooks/useMatchDetails";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Loader2 } from "lucide-react";
 import Header from "@/components/Header";
 import OddsCard from "@/components/OddsCard";
 import HandicapCard from "@/components/HandicapCard";
@@ -11,44 +12,9 @@ import LogBetModal from "@/components/LogBetModal";
 const MatchDetails = () => {
   const { matchId } = useParams();
   const navigate = useNavigate();
+  const { matchDetails, loading, error } = useMatchDetails(matchId);
   const [showLogBetModal, setShowLogBetModal] = useState(false);
   const [selectedBet, setSelectedBet] = useState<{ type: string; odd: string; market?: string; line?: string; handicapLine?: string; totalLine?: string } | null>(null);
-
-  // Sample match data - in a real app this would come from an API based on matchId
-  const matches = [
-    {
-      id: "1",
-      homeTeam: "Athletico Paranaense",
-      awayTeam: "Vasco da Gama",
-      date: "Wednesday, July 30th, 2025",
-      time: "4:00 PM",
-      homeOdd: "2.13",
-      drawOdd: "3.44",
-      awayOdd: "3.15"
-    },
-    {
-      id: "2", 
-      homeTeam: "Palmeiras",
-      awayTeam: "Juventude",
-      date: "Wednesday, July 30th, 2025",
-      time: "4:00 PM",
-      homeOdd: "1.29",
-      drawOdd: "5.37",
-      awayOdd: "8.65"
-    },
-    {
-      id: "3",
-      homeTeam: "RB Bragantino",
-      awayTeam: "Fortaleza", 
-      date: "Wednesday, July 30th, 2025",
-      time: "7:00 PM",
-      homeOdd: "1.72",
-      drawOdd: "3.90",
-      awayOdd: "4.14"
-    }
-  ];
-
-  const match = matches.find(m => m.id === matchId) || matches[0];
 
   const handleBetClick = (betType: string, odd: string, market?: string, line?: string, handicapLine?: string, totalLine?: string) => {
     setSelectedBet({ type: betType, odd, market, line, handicapLine, totalLine });
@@ -59,7 +25,8 @@ const MatchDetails = () => {
     navigate(-1);
   };
 
-  const handicapOptions = [
+  // Dados padrão caso não venham do backend
+  const defaultHandicapOptions = [
     { handicap: "+0.50", homeOdd: "1.35", awayOdd: "3.09" },
     { handicap: "+0.25", homeOdd: "1.43", awayOdd: "2.72" },
     { handicap: "+0.00", homeOdd: "1.58", awayOdd: "2.36" },
@@ -68,7 +35,7 @@ const MatchDetails = () => {
     { handicap: "-0.75", homeOdd: "2.44", awayOdd: "1.53" }
   ];
 
-  const overUnderOptions = [
+  const defaultOverUnderOptions = [
     { line: "2.00", overOdd: "1.33", underOdd: "3.15" },
     { line: "2.25", overOdd: "1.53", underOdd: "2.41" },
     { line: "2.50", overOdd: "1.74", underOdd: "2.06" },
@@ -76,6 +43,46 @@ const MatchDetails = () => {
     { line: "3.00", overOdd: "2.24", underOdd: "1.63" },
     { line: "3.25", overOdd: "2.50", underOdd: "1.49" }
   ];
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Header />
+        <div className="max-w-7xl mx-auto px-4 py-6">
+          <div className="flex items-center justify-center py-20">
+            <div className="flex items-center gap-2">
+              <Loader2 className="h-8 w-8 animate-spin" />
+              <span>Loading match details...</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error || !matchDetails) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Header />
+        <div className="max-w-7xl mx-auto px-4 py-6">
+          <div className="flex items-center mb-6">
+            <Button 
+              variant="ghost" 
+              onClick={handleBack}
+              className="mr-4 hover:bg-secondary"
+            >
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              Back
+            </Button>
+          </div>
+          <div className="text-center py-20">
+            <h2 className="text-2xl font-bold text-destructive mb-2">Error</h2>
+            <p className="text-muted-foreground">{error || "Match not found"}</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -95,10 +102,10 @@ const MatchDetails = () => {
 
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-primary mb-2">
-            {match.homeTeam} - {match.awayTeam}
+            {matchDetails.homeTeam} - {matchDetails.awayTeam}
           </h1>
           <p className="text-muted-foreground">
-            {match.date} - {match.time}
+            {matchDetails.date} - {matchDetails.time}
           </p>
         </div>
 
@@ -114,11 +121,11 @@ const MatchDetails = () => {
 
           <OddsCard
             title="1(N)2"
-            homeTeam={match.homeTeam}
-            awayTeam={match.awayTeam}
-            homeOdd={match.homeOdd}
-            drawOdd={match.drawOdd}
-            awayOdd={match.awayOdd}
+            homeTeam={matchDetails.homeTeam}
+            awayTeam={matchDetails.awayTeam}
+            homeOdd={matchDetails.homeOdd}
+            drawOdd={matchDetails.drawOdd}
+            awayOdd={matchDetails.awayOdd}
             isActive={true}
             onBetClick={handleBetClick}
           />
@@ -127,15 +134,15 @@ const MatchDetails = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <HandicapCard
             title="Handicap ?"
-            homeTeam={match.homeTeam.toUpperCase()}
-            awayTeam={match.awayTeam.toUpperCase()}
-            options={handicapOptions}
+            homeTeam={matchDetails.homeTeam.toUpperCase()}
+            awayTeam={matchDetails.awayTeam.toUpperCase()}
+            options={matchDetails.handicapOptions || defaultHandicapOptions}
             onBetClick={handleBetClick}
           />
 
           <OverUnderCard
             title="Pontos: mais/menos"
-            options={overUnderOptions}
+            options={matchDetails.overUnderOptions || defaultOverUnderOptions}
             onBetClick={handleBetClick}
           />
         </div>
@@ -144,7 +151,7 @@ const MatchDetails = () => {
       <LogBetModal
         open={showLogBetModal}
         onOpenChange={setShowLogBetModal}
-        selectedMatch={`${match.homeTeam} x ${match.awayTeam}`}
+        selectedMatch={`${matchDetails.homeTeam} x ${matchDetails.awayTeam}`}
         selectedBet={selectedBet?.type}
         prefilledOdds={selectedBet?.odd || ""}
         prefilledBetType={selectedBet?.market || "Moneyline"}

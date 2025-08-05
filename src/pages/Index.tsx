@@ -1,13 +1,16 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useMatchSearch } from "@/hooks/useMatches";
 import Header from "@/components/Header";
 import SearchBar from "@/components/SearchBar";
 import LogBetModal from "@/components/LogBetModal";
 import MatchDetailsModal from "@/components/MatchDetailsModal";
 import { Card } from "@/components/ui/card";
+import { Loader2 } from "lucide-react";
 
 const Index = () => {
   const navigate = useNavigate();
+  const { results: searchResults, loading: searchLoading, searchMatches } = useMatchSearch();
   const [showBetModal, setShowBetModal] = useState(false);
   const [showMatchDetailsModal, setShowMatchDetailsModal] = useState(false);
   const [selectedMatch, setSelectedMatch] = useState("");
@@ -15,43 +18,8 @@ const Index = () => {
   const [prefilledOdds, setPrefilledOdds] = useState("");
   const [prefilledBetType, setPrefilledBetType] = useState("");
   const [prefilledOption, setPrefilledOption] = useState("");
-  const [selectedMatchDetails, setSelectedMatchDetails] = useState<typeof matches[0] | null>(null);
+  const [selectedMatchDetails, setSelectedMatchDetails] = useState<any>(null);
   const [searchQuery, setSearchQuery] = useState("");
-  const [filteredMatches, setFilteredMatches] = useState<typeof matches>([]);
-
-  // Match data based on provided HTML
-  const matches = [
-    {
-      id: 1,
-      date: "Wednesday, July 30th, 2025",
-      time: "4:00 PM",
-      homeTeam: "Athletico Paranaense",
-      awayTeam: "Vasco da Gama",
-      homeOdd: "2.13",
-      drawOdd: "3.44",
-      awayOdd: "3.15"
-    },
-    {
-      id: 2,
-      date: "Wednesday, July 30th, 2025",
-      time: "4:00 PM",
-      homeTeam: "Palmeiras",
-      awayTeam: "Juventude",
-      homeOdd: "1.29",
-      drawOdd: "5.37",
-      awayOdd: "8.65"
-    },
-    {
-      id: 3,
-      date: "Wednesday, July 30th, 2025",
-      time: "7:00 PM",
-      homeTeam: "RB Bragantino",
-      awayTeam: "Fortaleza",
-      homeOdd: "1.72",
-      drawOdd: "3.90",
-      awayOdd: "4.14"
-    }
-  ];
 
   const handleBetClick = (match: string, betType: string, odd: string) => {
     setSelectedMatch(match);
@@ -59,7 +27,7 @@ const Index = () => {
     setShowBetModal(true);
   };
 
-  const handleMatchClick = (match: typeof matches[0]) => {
+  const handleMatchClick = (match: any) => {
     setSelectedMatchDetails(match);
     setShowMatchDetailsModal(true);
   };
@@ -102,14 +70,12 @@ const Index = () => {
 
   const handleSearch = (query: string) => {
     setSearchQuery(query);
-    const filtered = matches.filter(match => 
-      match.homeTeam.toLowerCase().includes(query.toLowerCase()) ||
-      match.awayTeam.toLowerCase().includes(query.toLowerCase())
-    );
-    setFilteredMatches(filtered);
+    if (query.trim()) {
+      searchMatches(query);
+    }
   };
 
-  const displayMatches = searchQuery ? filteredMatches : [];
+  const displayMatches = searchQuery ? searchResults : [];
 
   return (
     <div className="min-h-screen bg-background">
@@ -126,13 +92,24 @@ const Index = () => {
             {searchQuery && (
               <div className="mb-6">
                 <h3 className="text-lg font-semibold text-foreground mb-4">
-                  Results for "{searchQuery}" ({displayMatches.length})
+                  {searchLoading ? (
+                    <div className="flex items-center gap-2">
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                      Searching...
+                    </div>
+                  ) : (
+                    `Results for "${searchQuery}" (${displayMatches.length})`
+                  )}
                 </h3>
               </div>
             )}
             
             <div className="space-y-6">
-              {displayMatches.length > 0 ? (
+              {searchLoading ? (
+                <div className="flex justify-center py-8">
+                  <Loader2 className="h-8 w-8 animate-spin" />
+                </div>
+              ) : displayMatches.length > 0 ? (
                 displayMatches.map((match, index) => (
                   <div key={match.id}>
                     {index === 0 && (
@@ -192,7 +169,7 @@ const Index = () => {
                           
                           <button 
                             className="font-bold text-xl text-muted-foreground hover:text-foreground transition-colors"
-                            onClick={() => navigate(`/match/${match.id}`)}
+                            onClick={() => navigate(`/match/${match.id.toString()}`)}
                           >
                             +
                           </button>
@@ -205,7 +182,11 @@ const Index = () => {
                 <div className="text-center py-8">
                   <p className="text-muted-foreground">No events found for "{searchQuery}"</p>
                 </div>
-              ) : null}
+              ) : (
+                <div className="text-center py-8">
+                  <p className="text-muted-foreground">Use the search bar to find matches</p>
+                </div>
+              )}
             </div>
           </Card>
         </div>
