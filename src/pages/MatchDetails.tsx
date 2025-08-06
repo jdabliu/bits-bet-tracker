@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { useMatchDetails } from "@/hooks/useMatchDetails";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Loader2 } from "lucide-react";
 import Header from "@/components/Header";
@@ -12,7 +11,23 @@ import LogBetModal from "@/components/LogBetModal";
 const MatchDetails = () => {
   const { matchId } = useParams();
   const navigate = useNavigate();
-  const { matchDetails, loading, error } = useMatchDetails(matchId);
+  
+  // Dados mockados para demonstração
+  const mockMatchDetails = {
+    id: parseInt(matchId || "1"),
+    date: "Wednesday, July 30th, 2025",
+    time: "4:00 PM",
+    homeTeam: "Athletico Paranaense",
+    awayTeam: "Vasco da Gama",
+    homeOdd: "2.13",
+    drawOdd: "3.44",
+    awayOdd: "3.15"
+  };
+  
+  const loading = false;
+  const error = null;
+  const matchDetails = mockMatchDetails;
+  
   const [showLogBetModal, setShowLogBetModal] = useState(false);
   const [selectedBet, setSelectedBet] = useState<{ type: string; odd: string; market?: string; line?: string; handicapLine?: string; totalLine?: string } | null>(null);
 

@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useMatchSearch } from "@/hooks/useMatches";
 import Header from "@/components/Header";
 import SearchBar from "@/components/SearchBar";
 import LogBetModal from "@/components/LogBetModal";
@@ -10,7 +9,8 @@ import { Loader2 } from "lucide-react";
 
 const Index = () => {
   const navigate = useNavigate();
-  const { results: searchResults, loading: searchLoading, searchMatches } = useMatchSearch();
+  const [searchResults, setSearchResults] = useState<any[]>([]);
+  const [searchLoading, setSearchLoading] = useState(false);
   const [showBetModal, setShowBetModal] = useState(false);
   const [showMatchDetailsModal, setShowMatchDetailsModal] = useState(false);
   const [selectedMatch, setSelectedMatch] = useState("");
@@ -20,6 +20,40 @@ const Index = () => {
   const [prefilledOption, setPrefilledOption] = useState("");
   const [selectedMatchDetails, setSelectedMatchDetails] = useState<any>(null);
   const [searchQuery, setSearchQuery] = useState("");
+
+  // Dados mockados para demonstração
+  const mockMatches = [
+    {
+      id: 1,
+      date: "Wednesday, July 30th, 2025",
+      time: "4:00 PM",
+      homeTeam: "Athletico Paranaense",
+      awayTeam: "Vasco da Gama",
+      homeOdd: "2.13",
+      drawOdd: "3.44",
+      awayOdd: "3.15"
+    },
+    {
+      id: 2,
+      date: "Wednesday, July 30th, 2025",
+      time: "6:30 PM",
+      homeTeam: "Flamengo",
+      awayTeam: "Palmeiras",
+      homeOdd: "1.85",
+      drawOdd: "3.20",
+      awayOdd: "4.50"
+    },
+    {
+      id: 3,
+      date: "Wednesday, July 30th, 2025",
+      time: "8:00 PM",
+      homeTeam: "São Paulo",
+      awayTeam: "Corinthians",
+      homeOdd: "2.40",
+      drawOdd: "3.10",
+      awayOdd: "2.90"
+    }
+  ];
 
   const handleBetClick = (match: string, betType: string, odd: string) => {
     setSelectedMatch(match);
@@ -71,7 +105,18 @@ const Index = () => {
   const handleSearch = (query: string) => {
     setSearchQuery(query);
     if (query.trim()) {
-      searchMatches(query);
+      setSearchLoading(true);
+      // Simular busca nos dados mockados
+      setTimeout(() => {
+        const filtered = mockMatches.filter(match => 
+          match.homeTeam.toLowerCase().includes(query.toLowerCase()) ||
+          match.awayTeam.toLowerCase().includes(query.toLowerCase())
+        );
+        setSearchResults(filtered);
+        setSearchLoading(false);
+      }, 500);
+    } else {
+      setSearchResults([]);
     }
   };
 
