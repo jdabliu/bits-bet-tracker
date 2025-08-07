@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useMatchSearch } from "@/hooks/useMatches";
 import Header from "@/components/Header";
 import SearchBar from "@/components/SearchBar";
 import LogBetModal from "@/components/LogBetModal";
@@ -9,8 +10,7 @@ import { Loader2 } from "lucide-react";
 
 const Index = () => {
   const navigate = useNavigate();
-  const [searchResults, setSearchResults] = useState<any[]>([]);
-  const [searchLoading, setSearchLoading] = useState(false);
+  const { results: searchResults, loading: searchLoading, searchMatches, clearResults } = useMatchSearch();
   const [showBetModal, setShowBetModal] = useState(false);
   const [showMatchDetailsModal, setShowMatchDetailsModal] = useState(false);
   const [selectedMatch, setSelectedMatch] = useState("");
@@ -20,40 +20,6 @@ const Index = () => {
   const [prefilledOption, setPrefilledOption] = useState("");
   const [selectedMatchDetails, setSelectedMatchDetails] = useState<any>(null);
   const [searchQuery, setSearchQuery] = useState("");
-
-  // Dados mockados para demonstração
-  const mockMatches = [
-    {
-      id: 1,
-      date: "Wednesday, July 30th, 2025",
-      time: "4:00 PM",
-      homeTeam: "Athletico Paranaense",
-      awayTeam: "Vasco da Gama",
-      homeOdd: "2.13",
-      drawOdd: "3.44",
-      awayOdd: "3.15"
-    },
-    {
-      id: 2,
-      date: "Wednesday, July 30th, 2025",
-      time: "6:30 PM",
-      homeTeam: "Flamengo",
-      awayTeam: "Palmeiras",
-      homeOdd: "1.85",
-      drawOdd: "3.20",
-      awayOdd: "4.50"
-    },
-    {
-      id: 3,
-      date: "Wednesday, July 30th, 2025",
-      time: "8:00 PM",
-      homeTeam: "São Paulo",
-      awayTeam: "Corinthians",
-      homeOdd: "2.40",
-      drawOdd: "3.10",
-      awayOdd: "2.90"
-    }
-  ];
 
   const handleBetClick = (match: string, betType: string, odd: string) => {
     setSelectedMatch(match);
@@ -105,18 +71,9 @@ const Index = () => {
   const handleSearch = (query: string) => {
     setSearchQuery(query);
     if (query.trim()) {
-      setSearchLoading(true);
-      // Simular busca nos dados mockados
-      setTimeout(() => {
-        const filtered = mockMatches.filter(match => 
-          match.homeTeam.toLowerCase().includes(query.toLowerCase()) ||
-          match.awayTeam.toLowerCase().includes(query.toLowerCase())
-        );
-        setSearchResults(filtered);
-        setSearchLoading(false);
-      }, 500);
+      searchMatches(query);
     } else {
-      setSearchResults([]);
+      clearResults();
     }
   };
 
@@ -156,7 +113,7 @@ const Index = () => {
                 </div>
               ) : displayMatches.length > 0 ? (
                 displayMatches.map((match, index) => (
-                  <div key={match.id}>
+                  <div key={match.id || index}>
                     {index === 0 && (
                       <div className="mb-4">
                         <p className="font-medium text-muted-foreground">{match.date}</p>
@@ -168,13 +125,17 @@ const Index = () => {
                         {/* Clickable match area */}
                         <div 
                           className="flex items-center gap-4 cursor-pointer flex-1"
-                          onClick={() => handleMatchClick(match)}
+                          onClick={() => handleMatchClick({
+                            ...match,
+                            homeTeam: match.homeTeam || match.home,
+                            awayTeam: match.awayTeam || match.away
+                          })}
                         >
                           <span className="font-bold text-lg">{match.time}</span>
                           <div className="flex items-center gap-2">
-                            <span className="font-medium">{match.homeTeam}</span>
+                            <span className="font-medium">{match.homeTeam || match.home}</span>
                             <span className="text-muted-foreground">vs</span>
-                            <span className="font-medium">{match.awayTeam}</span>
+                            <span className="font-medium">{match.awayTeam || match.away}</span>
                           </div>
                         </div>
                         
@@ -182,10 +143,10 @@ const Index = () => {
                           <div className="flex items-center gap-1">
                             <span className="text-xs text-muted-foreground">1</span>
                             <button
-                              onClick={() => handleBetClick(`${match.homeTeam} x ${match.awayTeam}`, match.homeTeam, match.homeOdd)}
+                              onClick={() => handleBetClick(`${match.homeTeam || match.home} x ${match.awayTeam || match.away}`, match.homeTeam || match.home, match.homeOdd || '2.00')}
                               className="px-3 py-2 bg-muted/50 hover:bg-muted border border-border rounded text-sm font-medium transition-colors"
                             >
-                              {match.homeOdd}
+                              {match.homeOdd || '2.00'}
                               <span className="text-success ml-1">▲</span>
                             </button>
                           </div>
@@ -193,10 +154,10 @@ const Index = () => {
                           <div className="flex items-center gap-1">
                             <span className="text-xs text-muted-foreground">N</span>
                             <button
-                              onClick={() => handleBetClick(`${match.homeTeam} x ${match.awayTeam}`, "Draw", match.drawOdd)}
+                              onClick={() => handleBetClick(`${match.homeTeam || match.home} x ${match.awayTeam || match.away}`, "Draw", match.drawOdd || '3.20')}
                               className="px-3 py-2 bg-muted/50 hover:bg-muted border border-border rounded text-sm font-medium transition-colors"
                             >
-                              {match.drawOdd}
+                              {match.drawOdd || '3.20'}
                               <span className="text-success ml-1">▲</span>
                             </button>
                           </div>
@@ -204,17 +165,17 @@ const Index = () => {
                           <div className="flex items-center gap-1">
                             <span className="text-xs text-muted-foreground">2</span>
                             <button
-                              onClick={() => handleBetClick(`${match.homeTeam} x ${match.awayTeam}`, match.awayTeam, match.awayOdd)}
+                              onClick={() => handleBetClick(`${match.homeTeam || match.home} x ${match.awayTeam || match.away}`, match.awayTeam || match.away, match.awayOdd || '2.80')}
                               className="px-3 py-2 bg-muted/50 hover:bg-muted border border-border rounded text-sm font-medium transition-colors"
                             >
-                              {match.awayOdd}
+                              {match.awayOdd || '2.80'}
                               <span className="text-destructive ml-1">▼</span>
                             </button>
                           </div>
                           
                           <button 
                             className="font-bold text-xl text-muted-foreground hover:text-foreground transition-colors"
-                            onClick={() => navigate(`/match/${match.id.toString()}`)}
+                            onClick={() => navigate(`/match/${match.id}`)}
                           >
                             +
                           </button>

@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
-import { apiService, Match } from '@/services/api';
+import { apiService, Match, GetMatchesParams } from '@/services/api';
 
-export const useMatches = () => {
+export const useMatches = (params: GetMatchesParams = {}) => {
   const [matches, setMatches] = useState<Match[]>([]);
+  const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -10,10 +11,13 @@ export const useMatches = () => {
     try {
       setLoading(true);
       setError(null);
-      const data = await apiService.getMatches();
-      setMatches(data);
+      const data = await apiService.getMatches(params);
+      setMatches(data.matches);
+      setTotal(data.total);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Erro ao carregar partidas');
+      setMatches([]);
+      setTotal(0);
     } finally {
       setLoading(false);
     }
@@ -21,10 +25,11 @@ export const useMatches = () => {
 
   useEffect(() => {
     fetchMatches();
-  }, []);
+  }, [JSON.stringify(params)]);
 
   return {
     matches,
+    total,
     loading,
     error,
     refetch: fetchMatches,
@@ -55,10 +60,16 @@ export const useMatchSearch = () => {
     }
   };
 
+  const clearResults = () => {
+    setResults([]);
+    setError(null);
+  };
+
   return {
     results,
     loading,
     error,
     searchMatches,
+    clearResults,
   };
 };

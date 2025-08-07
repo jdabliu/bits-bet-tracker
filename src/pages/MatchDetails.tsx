@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { useMatchDetails } from "@/hooks/useMatchDetails";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Loader2 } from "lucide-react";
 import Header from "@/components/Header";
@@ -11,22 +12,7 @@ import LogBetModal from "@/components/LogBetModal";
 const MatchDetails = () => {
   const { matchId } = useParams();
   const navigate = useNavigate();
-  
-  // Dados mockados para demonstração
-  const mockMatchDetails = {
-    id: parseInt(matchId || "1"),
-    date: "Wednesday, July 30th, 2025",
-    time: "4:00 PM",
-    homeTeam: "Athletico Paranaense",
-    awayTeam: "Vasco da Gama",
-    homeOdd: "2.13",
-    drawOdd: "3.44",
-    awayOdd: "3.15"
-  };
-  
-  const loading = false;
-  const error = null;
-  const matchDetails = mockMatchDetails;
+  const { matchDetails, loading, error } = useMatchDetails(matchId || '');
   
   const [showLogBetModal, setShowLogBetModal] = useState(false);
   const [selectedBet, setSelectedBet] = useState<{ type: string; odd: string; market?: string; line?: string; handicapLine?: string; totalLine?: string } | null>(null);
@@ -39,25 +25,6 @@ const MatchDetails = () => {
   const handleBack = () => {
     navigate(-1);
   };
-
-  // Dados padrão caso não venham do backend
-  const defaultHandicapOptions = [
-    { handicap: "+0.50", homeOdd: "1.35", awayOdd: "3.09" },
-    { handicap: "+0.25", homeOdd: "1.43", awayOdd: "2.72" },
-    { handicap: "+0.00", homeOdd: "1.58", awayOdd: "2.36" },
-    { handicap: "-0.25", homeOdd: "1.86", awayOdd: "1.95" },
-    { handicap: "-0.50", homeOdd: "2.12", awayOdd: "1.71" },
-    { handicap: "-0.75", homeOdd: "2.44", awayOdd: "1.53" }
-  ];
-
-  const defaultOverUnderOptions = [
-    { line: "2.00", overOdd: "1.33", underOdd: "3.15" },
-    { line: "2.25", overOdd: "1.53", underOdd: "2.41" },
-    { line: "2.50", overOdd: "1.74", underOdd: "2.06" },
-    { line: "2.75", overOdd: "1.94", underOdd: "1.86" },
-    { line: "3.00", overOdd: "2.24", underOdd: "1.63" },
-    { line: "3.25", overOdd: "2.50", underOdd: "1.49" }
-  ];
 
   if (loading) {
     return (
@@ -117,10 +84,10 @@ const MatchDetails = () => {
 
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-primary mb-2">
-            {matchDetails.homeTeam} - {matchDetails.awayTeam}
+            {matchDetails.homeTeam || matchDetails.home} - {matchDetails.awayTeam || matchDetails.away}
           </h1>
           <p className="text-muted-foreground">
-            {matchDetails.date} - {matchDetails.time}
+            {matchDetails.date || new Date(matchDetails.starts).toLocaleDateString()} - {matchDetails.time || new Date(matchDetails.starts).toLocaleTimeString()}
           </p>
         </div>
 
@@ -136,11 +103,11 @@ const MatchDetails = () => {
 
           <OddsCard
             title="1(N)2"
-            homeTeam={matchDetails.homeTeam}
-            awayTeam={matchDetails.awayTeam}
-            homeOdd={matchDetails.homeOdd}
-            drawOdd={matchDetails.drawOdd}
-            awayOdd={matchDetails.awayOdd}
+            homeTeam={matchDetails.homeTeam || matchDetails.home}
+            awayTeam={matchDetails.awayTeam || matchDetails.away}
+            homeOdd={matchDetails.homeOdd || '2.00'}
+            drawOdd={matchDetails.drawOdd || '3.20'}
+            awayOdd={matchDetails.awayOdd || '2.80'}
             isActive={true}
             onBetClick={handleBetClick}
           />
@@ -149,15 +116,15 @@ const MatchDetails = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <HandicapCard
             title="Handicap ?"
-            homeTeam={matchDetails.homeTeam.toUpperCase()}
-            awayTeam={matchDetails.awayTeam.toUpperCase()}
-            options={matchDetails.handicapOptions || defaultHandicapOptions}
+            homeTeam={(matchDetails.homeTeam || matchDetails.home).toUpperCase()}
+            awayTeam={(matchDetails.awayTeam || matchDetails.away).toUpperCase()}
+            options={matchDetails.handicapOptions || []}
             onBetClick={handleBetClick}
           />
 
           <OverUnderCard
             title="Pontos: mais/menos"
-            options={matchDetails.overUnderOptions || defaultOverUnderOptions}
+            options={matchDetails.overUnderOptions || []}
             onBetClick={handleBetClick}
           />
         </div>
@@ -166,7 +133,7 @@ const MatchDetails = () => {
       <LogBetModal
         open={showLogBetModal}
         onOpenChange={setShowLogBetModal}
-        selectedMatch={`${matchDetails.homeTeam} x ${matchDetails.awayTeam}`}
+        selectedMatch={`${matchDetails.homeTeam || matchDetails.home} x ${matchDetails.awayTeam || matchDetails.away}`}
         selectedBet={selectedBet?.type}
         prefilledOdds={selectedBet?.odd || ""}
         prefilledBetType={selectedBet?.market || "Moneyline"}
